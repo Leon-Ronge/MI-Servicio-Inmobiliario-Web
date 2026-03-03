@@ -163,6 +163,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnGuardarExpensas = document.getElementById('btnGuardarExpensas');
     const successMsgExpensas = document.getElementById('successMsgExpensas');
 
+    // ── Helpers de formateo estilo argentino (1.234.567,89) ──────────────
+    function formatearMonto(valor) {
+        // Recibe un número o string numérico, devuelve string formateado
+        const num = parseFloat(String(valor).replace(',', '.'));
+        if (isNaN(num)) return '';
+        return num.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function parsearMonto(str) {
+        // Convierte "1.234.567,89" → 1234567.89
+        return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+    }
+
+    // Formateo en tiempo real mientras el usuario escribe
+    montoExpensas.addEventListener('input', () => {
+        const raw = montoExpensas.value;
+        // Extraer solo dígitos y una coma (parte decimal)
+        const onlyDigits = raw.replace(/[^0-9,]/g, '');
+        const parts = onlyDigits.split(',');
+        const intPart = parts[0].replace(/^0+(?=\d)/, '') || '0';
+        const decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
+
+        // Formatear parte entera con puntos de miles
+        const intFormatted = Number(intPart).toLocaleString('es-AR');
+
+        // Reconstruir valor
+        montoExpensas.value = decPart !== null
+            ? intFormatted + ',' + decPart
+            : intFormatted === '0' ? '' : intFormatted;
+    });
+
+    // Bloquear teclas no permitidas
+    montoExpensas.addEventListener('keydown', (e) => {
+        const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'];
+        const isDigit = /^[0-9]$/.test(e.key);
+        const isComa = e.key === ',';
+        const hasComa = montoExpensas.value.includes(',');
+        if (!isDigit && !isComa && !allowed.includes(e.key)) e.preventDefault();
+        if (isComa && hasComa) e.preventDefault();
+    });
+
     crearAutocomplete({
         inputEl: expInmuebleInput,
         dropdownEl: expInmuebleDropdown,
@@ -175,28 +216,28 @@ document.addEventListener('DOMContentLoaded', () => {
         onSelect: (key, label) => {
             expInmuebleInput.value = label;
             selectedExpInmueble = { key, label };
-            // Cargar monto guardado para ese inmueble
+            // Cargar monto guardado para ese inmueble (ya guardado con formato es-AR)
             const monto = localStorage.getItem('expensas_' + key);
-            montoExpensas.value = monto ? monto.replace(/\./g, '') : '';
+            montoExpensas.value = monto || '';
         }
     });
 
     btnGuardarExpensas.addEventListener('click', () => {
         if (!selectedExpInmueble) { mostrarAlerta('Seleccioná un inmueble primero.', 'warning'); return; }
-        const monto = montoExpensas.value.trim();
-        if (!monto || isNaN(monto) || Number(monto) < 0) { mostrarAlerta('Por favor ingresá un monto válido.', 'error'); return; }
+        const rawMonto = montoExpensas.value.trim();
+        const montoNuevo = parsearMonto(rawMonto);
+        if (!rawMonto || isNaN(montoNuevo) || montoNuevo < 0) { mostrarAlerta('Por favor ingresá un monto válido.', 'error'); return; }
 
         const storageKey = 'expensas_' + selectedExpInmueble.key;
         const montoAnteriorStr = localStorage.getItem(storageKey);
-        const montoNuevo = Number(monto);
 
         // Convertir el monto anterior guardado (formato "52.000,00") a número
         let montoAnterior = 0;
         if (montoAnteriorStr) {
-            montoAnterior = Number(montoAnteriorStr.replace(/\./g, '').replace(',', '.'));
+            montoAnterior = parsearMonto(montoAnteriorStr);
         }
 
-        const montoFormat = montoNuevo.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const montoFormat = formatearMonto(montoNuevo);
         localStorage.setItem(storageKey, montoFormat);
 
         // Si el monto AUMENTÓ, guardar alerta para el cliente
