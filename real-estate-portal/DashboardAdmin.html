@@ -79,6 +79,27 @@
                         inputmode="numeric" required>
                 </div>
 
+                <!-- Adjunto de archivo -->
+                <div class="form-group" id="msgArchivoGroup" style="display:none;">
+                    <label><i class="fas fa-paperclip"></i> &nbsp;Adjuntar archivo (opcional)</label>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="archivoInput" class="upload-input" accept="*/*">
+                        <div class="upload-zone-content" id="uploadZoneContent">
+                            <i class="fas fa-cloud-upload-alt upload-zone-icon"></i>
+                            <span class="upload-zone-text">Hacé clic o arrastrá un archivo aquí</span>
+                            <span class="upload-zone-hint">PDF, imagen, Word, Excel…</span>
+                        </div>
+                        <!-- Preview del archivo cargado -->
+                        <div class="upload-file-chip" id="uploadFileChip" style="display:none;">
+                            <i class="fas fa-file-alt chip-icon"></i>
+                            <span class="chip-name" id="chipFileName"></span>
+                            <button class="chip-remove" id="btnRemoveFile" title="Quitar archivo" type="button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <button id="btnGuardarExpensas" class="btn-action">
                     <i class="fas fa-save"></i> Guardar Monto
                 </button>

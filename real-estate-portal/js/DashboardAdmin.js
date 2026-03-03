@@ -267,6 +267,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const msgHistory = document.getElementById('msgHistory');
     const msgList = document.getElementById('msgList');
 
+    // ── UPLOAD DE ARCHIVO ──────────────────────────────────────────
+    const uploadZone = document.getElementById('uploadZone');
+    const archivoInput = document.getElementById('archivoInput');
+    const uploadZoneContent = document.getElementById('uploadZoneContent');
+    const uploadFileChip = document.getElementById('uploadFileChip');
+    const chipFileName = document.getElementById('chipFileName');
+    const btnRemoveFile = document.getElementById('btnRemoveFile');
+    const msgArchivoGroup = document.getElementById('msgArchivoGroup');
+
+    function mostrarChipArchivo(nombre) {
+        chipFileName.textContent = nombre;
+        uploadZoneContent.style.display = 'none';
+        uploadFileChip.style.display = 'flex';
+        uploadZone.classList.add('has-file');
+    }
+
+    function limpiarArchivo() {
+        archivoInput.value = '';
+        chipFileName.textContent = '';
+        uploadFileChip.style.display = 'none';
+        uploadZoneContent.style.display = 'flex';
+        uploadZone.classList.remove('has-file', 'drag-over');
+    }
+
+    archivoInput.addEventListener('change', () => {
+        if (archivoInput.files.length > 0) {
+            mostrarChipArchivo(archivoInput.files[0].name);
+        }
+    });
+
+    btnRemoveFile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        limpiarArchivo();
+    });
+
+    // Drag & drop visual
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!uploadZone.classList.contains('has-file')) {
+            uploadZone.classList.add('drag-over');
+        }
+    });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        if (uploadZone.classList.contains('has-file')) return;
+        const file = e.dataTransfer?.files?.[0];
+        if (file) mostrarChipArchivo(file.name);
+    });
+
     btnEnviarMsg.addEventListener('click', () => {
         const texto = msgTexto.value.trim();
         if (!selectedMsgInmueble) { mostrarAlerta('Seleccioná un inmueble antes de enviar.', 'warning'); return; }
@@ -359,7 +410,9 @@ document.addEventListener('DOMContentLoaded', () => {
         crearBtnInm('general', 'General', 'fa-globe');
         inmueblePreview.classList.add('visible');
         msgTextGroup.style.display = 'flex';
+        msgArchivoGroup.style.display = 'flex';
         btnEnviarMsg.style.display = 'flex';
+        limpiarArchivo();
         renderMsgHistory(key);
         msgHistory.style.display = 'block';
     }
@@ -376,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
         previewItems.innerHTML = '';
         inmueblePreview.classList.remove('visible');
         msgTextGroup.style.display = 'none';
+        msgArchivoGroup.style.display = 'none';
+        limpiarArchivo();
         btnEnviarMsg.style.display = 'none';
         msgHistory.style.display = 'none';
     }
