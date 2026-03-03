@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Modern Real Estate Portal - Find your dream home, apartment or commercial property.">
+    <title>MI Servicio inmobiliario</title>
+    <link rel="icon" href="../LogoInmob.png" type="image/png">
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="../LogoInmob.png" alt="Logo" class="logoimg">
+                MI <span>Servicio Inmobiliario</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html" class="active">Inicio</a>
+                <a href="properties.html">Inmuebles</a>
+                <a href="login.html">Autogestión</a>
+            </nav>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <h1>Encontrá tu propiedad ideal</h1>
+            <p class="subtitle">Descubre las mejores propiedades disponibles en Córdoba y sus alrededores.</p>
+
+            <!-- Advanced Filters Section -->
+            <div class="advanced-filters">
+                <form class="filter-form">
+                    <div class="filter-group">
+                        <label>Operación</label>
+                        <select class="custom-select">
+                            <option value="sale">Venta</option>
+                            <option value="rent">Alquiler</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Tipo</label>
+                        <select class="custom-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="apartment">Departamento</option>
+                            <option value="house">Casa</option>
+                            <option value="commercial">Comercial</option>
+                            <option value="office">Oficina</option>
+                            <option value="land">Terreno</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Ciudad</label>
+                        <select class="custom-select">
+                            <option value="">Cualquier ciudad</option>
+                            <option value="cordoba">Córdoba</option>
+                            <option value="carlos_paz">Carlos Paz</option>
+                            <option value="villa_maria">Villa María</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Barrio</label>
+                        <select class="custom-select">
+                            <option value="">Cualquier barrio</option>
+                            <option value="centro">Centro</option>
+                            <option value="nueva_cordoba">Nueva Córdoba</option>
+                            <option value="alberdi">Alberdi</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group price-group">
+                        <label>Presupuesto</label>
+                        <div class="price-inputs">
+                            <select class="custom-select currency-select" aria-label="Currency">
+                                <option value="USD">USD</option>
+                                <option value="ARS">ARS</option>
+                            </select>
+                            <input type="number" placeholder="Desde" aria-label="Minimum price">
+                            <span class="separator">-</span>
+                            <input type="number" placeholder="Hasta" aria-label="Maximum price">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Superficie</label>
+                        <div class="price-inputs">
+                            <input type="number" placeholder="Desde" aria-label="Minimum surface">
+                            <span class="separator">-</span>
+                            <input type="number" placeholder="Hasta" aria-label="Maximum surface">
+                        </div>
+                    </div>
+
+                    <div class="filter-submit">
+                        <button type="button" class="btn btn-primary btn-search">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Featured Properties / Property Listing Grid -->
+        <section class="property-section">
+            <div class="section-header">
+                <h2>Propiedades destacadas</h2>
+                <a href="properties.html" class="view-all">Ver todo <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="property-grid">
+                <article class="property-card featured">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800"
+                            alt="Casa Moderna">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                            <span class="badge featured-badge"><i class="fas fa-star"></i> Destacada</span>
+                        </div>
+                        <div class="price">USD 280,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Casa</span>
+                        <h3 class="property-title">Chalet Moderno con Piscina</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Cerro de las Rosas, Córdoba
+                        </p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 3 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 250 m²</span>
+                        </div>
+                        <p class="property-desc">Espectacular casa moderna ubicada en una zona residencial exclusiva.
+                            Cuenta con ambientes luminosos, amplio jardín, quincho cerrado y terminaciones de primera
+                            calidad.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 2 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800"
+                            alt="Departamento de Lujo">
+                        <div class="badges">
+                            <span class="badge operation rent">Alquiler</span>
+                        </div>
+                        <div class="price">ARS 850,000<span>/mes</span></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Departamento</span>
+                        <h3 class="property-title">Departamento Premium en Altura</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Córdoba, Nueva Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 2 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 110 m²</span>
+                        </div>
+                        <p class="property-desc">Impresionante departamento contemporáneo con vistas a la ciudad,
+                            amenities exclusivos y guardia de seguridad 24/7 en pleno corazón de Nueva Córdoba.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 3 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800"
+                            alt="Espacio Comercial">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                        </div>
+                        <div class="price">USD 1,200,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Comercial</span>
+                        <h3 class="property-title">Edificio de Oficinas Céntrico</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Córdoba, Centro</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-building"></i> 3 Pisos</span>
+                            <span><i class="fas fa-car"></i> 10 Cocheras</span>
+                            <span><i class="fas fa-vector-square"></i> 800 m²</span>
+                        </div>
+                        <p class="property-desc">Propiedad comercial en ubicación privilegiada, ideal para sede
+                            corporativa o locales comerciales boutique con alto tránsito peatonal.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 4 -->
+                <article class="property-card featured">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=800"
+                            alt="Casa Familiar">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                            <span class="badge featured-badge"><i class="fas fa-star"></i> Destacada</span>
+                        </div>
+                        <div class="price">USD 180,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Casa</span>
+                        <h3 class="property-title">Hermosa Casa Familiar con Jardín</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Barrio Jardín, Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 3 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 180 m²</span>
+                        </div>
+                        <p class="property-desc">Acogedora casa de estilo colonial renovada, con amplio patio trasero,
+                            galería con asador y cochera doble. Entorno tranquilo y seguro.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 5 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1de24244e4?auto=format&fit=crop&q=80&w=800"
+                            alt="Departamento Moderno">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                        </div>
+                        <div class="price">USD 95,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Departamento</span>
+                        <h3 class="property-title">Departamento Luminoso a Estrenar</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> General Paz, Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 1 Dormitorio</span>
+                            <span><i class="fas fa-bath"></i> 1 Baño</span>
+                            <span><i class="fas fa-vector-square"></i> 55 m²</span>
+                        </div>
+                        <p class="property-desc">Excelente oportunidad de inversión. Departamento moderno con balcón al
+                            frente, cocina integrada con barra y detalles de categoría.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 6 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800"
+                            alt="Departamento Amoblado">
+                        <div class="badges">
+                            <span class="badge operation rent">Alquiler</span>
+                        </div>
+                        <div class="price">ARS 450,000<span>/mes</span></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Departamento</span>
+                        <h3 class="property-title">Dúplex Amoblado con Terraza</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Barrio Güemes, Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 2 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 85 m²</span>
+                        </div>
+                        <p class="property-desc">Espectacular dúplex totalmente equipado en el polo gastronómico y
+                            cultural de la ciudad. Cuenta con terraza propia y parrilla.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo">MI <span>Servicio Inmobiliario</span></a>
+                <p>Tu propiedad en las mejores manos.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="properties.html">Propiedades</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+
+
+            <div class="footer-contact">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Principal 123, Córdoba, Argentina</li>
+                    <li><i class="fas fa-phone-alt"></i> +54 9 351 123 4567</li>
+                    <li><i class="fas fa-envelope"></i> info@miservicioinmobiliario.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2024 MI Servicio Inmobiliario. Todos los derechos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.mobile-toggle').addEventListener('click', function () {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autogestion</title>
+    <link rel="icon" href="../LogoInmob.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/DashboardCliente.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <header class="header">
+            <div class="logo">
+                <img src="../LogoInmob.png" alt="Logo M" class="logo-m">
+                <div class="header-text">
+                    <h1>Autogestion</h1>
+                    <span class="user">Usuario: Leon Ronge</span>
+                </div>
+            </div>
+            <div class="logout-wrapper">
+                <a href="login.html" class="btn-logout" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </header>
+
+        <main class="main-content">
+
+            <div class="top-row">
+
+                <section class="inmueble-card">
+                    <div class="card-header-inmueble">
+                        <div class="header-icon-title">
+                            <i class="fas fa-home" style="color: var(--color-orange); font-size: 1.6rem;"></i>
+                            <h2>Mi Inmueble</h2>
+                        </div>
+
+                        <div class="inmueble-selector-wrapper">
+                            <select id="selectorInmueble" class="styled-select">
+                                <option value="fragueiro" selected>Mariano Fragueiro 185</option>
+                                <option value="urquiza">Justo J. de Urquiza 184</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card-body-inmueble">
+                        <div class="inmueble-detail-item">
+                            <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Dirección</span>
+                            <span class="detail-value" id="infoDireccion">Mariano Fragueiro 185/187</span>
+                        </div>
+
+                        <div class="inmueble-detail-item">
+                            <span class="detail-label"><i class="fas fa-building"></i> Edificio</span>
+                            <span class="detail-value" id="infoEdificio">San Marcos</span>
+                        </div>
+
+                        <div class="inmueble-detail-item">
+                            <span class="detail-label"><i class="fas fa-door-open"></i> Departamento</span>
+                            <span class="detail-value highlight-value" id="infoDepto">10 C</span>
+                        </div>
+
+                        <div class="inmueble-detail-item">
+                            <span class="detail-label"><i class="fas fa-user-tie"></i> Propietario</span>
+                            <span class="detail-value" id="infoPropietario">León Rongé</span>
+                        </div>
+
+                        <div class="inmueble-detail-item" style="border-left: 4px solid #e53935; background: #fff5f5;">
+                            <span class="detail-label" style="color: #e53935;"><i class="fas fa-file-invoice-dollar"
+                                    style="color: #e53935;"></i> Expensas a Pagar</span>
+                            <span class="detail-value highlight-value" id="infoExpensas"
+                                style="color: #e53935;">$0</span>
+                        </div>
+
+                        <!-- Alerta de aumento de expensas -->
+                        <div class="expensas-alerta" id="expensasAlerta" style="display:none;">
+                            <div class="expensas-alerta-icon">
+                                <i class="fas fa-arrow-trend-up"></i>
+                            </div>
+                            <div class="expensas-alerta-body">
+                                <div class="expensas-alerta-title">¡Aumento de Expensas!</div>
+                                <div class="expensas-alerta-detalle" id="expensasAlertaDetalle"></div>
+                            </div>
+                            <button class="expensas-alerta-close" id="btnCerrarAlertaExpensas" title="Descartar">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="contactos-utiles-card">
+                    <div class="card-header">
+                        <h2>Contactos Útiles</h2>
+                        <span class="badge-count">7 disponibles</span>
+                    </div>
+
+                    <div class="contactos-grid">
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-blue">AD</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Adrián</span>
+                                <span class="contact-role">Electricista</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-green">MA</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Marcos</span>
+                                <span class="contact-role">Plomero</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-red">MA</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Mariela</span>
+                                <span class="contact-role">Inmobiliaria</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-purple">MR</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Marcelo</span>
+                                <span class="contact-role">Pintor</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-yellow">CL</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Claudia</span>
+                                <span class="contact-role">Limpieza</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-red">JO</div>
+                            <div class="contact-info">
+                                <span class="contact-name">José</span>
+                                <span class="contact-role">Cerrajero</span>
+                                <span class="contact-number">351 764532</span>
+                            </div>
+                            <a href="tel:+54351764532" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-dark-green">ES</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Esteban</span>
+                                <span class="contact-role">Fumigador</span>
+                                <span class="contact-number">351 764534</span>
+                            </div>
+                            <a href="tel:+54351764534" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+
+                        <div class="contact-mini-card">
+                            <div class="contact-avatar avatar-brown">JA</div>
+                            <div class="contact-info">
+                                <span class="contact-name">Javier</span>
+                                <span class="contact-role">Albañil</span>
+                                <span class="contact-number">351 764537</span>
+                            </div>
+                            <a href="tel:+54351764537" class="btn-call">
+                                Llamar
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- ===== SECCIÓN: MENSAJES DEL ADMINISTRADOR ===== -->
+            <section class="notif-card">
+                <div class="notif-header">
+                    <div class="notif-title">
+                        <i class="fas fa-bell"></i> Notificaciones
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="notif-badge" id="notifBadge">0</span>
+                        <button class="btn-mark-all" id="btnMarcarLeidos"><i class="fas fa-check-double"></i> Marcar
+                            todas como leídas</button>
+                    </div>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div class="notif-empty">
+                        <i class="fas fa-inbox"></i>
+                        No tenés notificaciones nuevas.
+                    </div>
+                </div>
+            </section>
+
+            <section class="servicios-container">
+                <div class="servicios-header">
+                    <h2>Servicios</h2>
+                    <button id="btnAgregarServicio" class="agregar-btn">Agregar +</button>
+                </div>
+
+                <div class="servicios-grid" id="gridServicios">
+                    <div class="empty-state">No hay servicios activos.</div>
+                </div>
+            </section>
+
+            <div id="modalChecklist" class="modal-overlay">
+                <div class="modal-content">
+                    <span class="close-checklist close-modal">&times;</span>
+
+                    <div class="factura-header">
+                        <h2>Activar Servicios</h2>
+                        <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
+                    </div>
+
+                    <div class="checklist-container">
+                        <label class="checklist-item">
+                            <input type="checkbox" value="luz" checked>
+                            <div class="check-info">
+                                <span class="check-title">Electricidad, </span>
+                                <span class="check-desc">EPEC</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="agua">
+                            <div class="check-info">
+                                <span class="check-title">Agua, </span>
+                                <span class="check-desc">Aguas Cordobesas</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="gas">
+                            <div class="check-info">
+                                <span class="check-title">Gas, </span>
+                                <span class="check-desc">Ecogas</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="internet">
+                            <div class="check-info">
+                                <span class="check-title">Internet</span>
+                                <span class="check-desc"></span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="admin">
+                            <div class="check-info">
+                                <span class="check-title">Administración, </span>
+                                <span class="check-desc">Expensas / Consorcio</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button id="btnGuardarServicios" class="btn-download" style="background-color: var(--color-dark);">
+                        Confirmar y Mostrar
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+
+    </div>
+    <script src="../js/DashboardCliente.js"></script>
+</body>
+
+</html>
