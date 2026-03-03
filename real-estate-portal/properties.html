@@ -6,28 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
         content="Modern Real Estate Portal - Find your dream home, apartment or commercial property.">
-    <title>MI Servicio inmobiliario</title>
-    <link rel="icon" href="../LogoInmob.png" type="image/png">
+    <title>MI Servicio Inmobiliario</title>
+    <link rel="icon" href="LogoInmob.png" type="image/png">
     <!-- Modern Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
     <!-- Header / Navbar -->
     <header class="navbar">
         <div class="container nav-container">
-            <a href="#" class="logo">
-                <img src="../LogoInmob.png" alt="Logo" class="logoimg">
+            <a href="index.html" class="logo">
+                <img src="LogoInmob.png" alt="Logo" class="logoimg">
                 MI <span>Servicio Inmobiliario</span>
             </a>
             <nav class="nav-links" id="nav-links">
-                <a href="index.html" class="active">Inicio</a>
-                <a href="properties.html">Inmuebles</a>
+                <a href="index.html">Inicio</a>
+                <a href="properties.html" class="active">Inmuebles</a>
                 <a href="login.html">Autogestión</a>
             </nav>
             <button class="mobile-toggle" aria-label="Toggle navigation">
@@ -36,96 +36,95 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <h1>Encontrá tu propiedad ideal</h1>
-            <p class="subtitle">Descubre las mejores propiedades disponibles en Córdoba y sus alrededores.</p>
-
-            <!-- Advanced Filters Section -->
-            <div class="advanced-filters">
-                <form class="filter-form">
-                    <div class="filter-group">
-                        <label>Operación</label>
-                        <select class="custom-select">
-                            <option value="sale">Venta</option>
-                            <option value="rent">Alquiler</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Tipo</label>
-                        <select class="custom-select">
-                            <option value="">Todos los tipos</option>
-                            <option value="apartment">Departamento</option>
-                            <option value="house">Casa</option>
-                            <option value="commercial">Comercial</option>
-                            <option value="office">Oficina</option>
-                            <option value="land">Terreno</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Ciudad</label>
-                        <select class="custom-select">
-                            <option value="">Cualquier ciudad</option>
-                            <option value="cordoba">Córdoba</option>
-                            <option value="carlos_paz">Carlos Paz</option>
-                            <option value="villa_maria">Villa María</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Barrio</label>
-                        <select class="custom-select">
-                            <option value="">Cualquier barrio</option>
-                            <option value="centro">Centro</option>
-                            <option value="nueva_cordoba">Nueva Córdoba</option>
-                            <option value="alberdi">Alberdi</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group price-group">
-                        <label>Presupuesto</label>
-                        <div class="price-inputs">
-                            <select class="custom-select currency-select" aria-label="Currency">
-                                <option value="USD">USD</option>
-                                <option value="ARS">ARS</option>
-                            </select>
-                            <input type="number" placeholder="Desde" aria-label="Minimum price">
-                            <span class="separator">-</span>
-                            <input type="number" placeholder="Hasta" aria-label="Maximum price">
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Superficie</label>
-                        <div class="price-inputs">
-                            <input type="number" placeholder="Desde" aria-label="Minimum surface">
-                            <span class="separator">-</span>
-                            <input type="number" placeholder="Hasta" aria-label="Maximum surface">
-                        </div>
-                    </div>
-
-                    <div class="filter-submit">
-                        <button type="button" class="btn btn-primary btn-search">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
     <!-- Main Content -->
-    <main class="container">
+    <main class="container" style="margin-top: 40px;">
 
-        <!-- Featured Properties / Property Listing Grid -->
-        <section class="property-section">
+        <!-- Advanced Filters Section (Standalone) -->
+        <div class="advanced-filters"
+            style="transform: none; margin-bottom: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+            <form class="filter-form">
+                <div class="filter-group">
+                    <label>Operación</label>
+                    <select class="custom-select">
+                        <option value="sale">Venta</option>
+                        <option value="rent">Alquiler</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Tipo</label>
+                    <select class="custom-select">
+                        <option value="">Todos los tipos</option>
+                        <option value="apartment">Departamento</option>
+                        <option value="house">Casa</option>
+                        <option value="commercial">Comercial</option>
+                        <option value="office">Oficina</option>
+                        <option value="land">Terreno</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Ciudad</label>
+                    <select class="custom-select">
+                        <option value="">Cualquier ciudad</option>
+                        <option value="cordoba">Córdoba</option>
+                        <option value="carlos_paz">Carlos Paz</option>
+                        <option value="villa_maria">Villa María</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Barrio</label>
+                    <select class="custom-select">
+                        <option value="">Cualquier barrio</option>
+                        <option value="centro">Centro</option>
+                        <option value="nueva_cordoba">Nueva Córdoba</option>
+                        <option value="alberdi">Alberdi</option>
+                    </select>
+                </div>
+
+                <div class="filter-group price-group">
+                    <label>Presupuesto</label>
+                    <div class="price-inputs">
+                        <select class="custom-select currency-select" aria-label="Currency">
+                            <option value="USD">USD</option>
+                            <option value="ARS">ARS</option>
+                        </select>
+                        <input type="number" placeholder="Desde" aria-label="Minimum price">
+                        <span class="separator">-</span>
+                        <input type="number" placeholder="Hasta" aria-label="Maximum price">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Superficie</label>
+                    <div class="price-inputs">
+                        <input type="number" placeholder="Desde" aria-label="Minimum surface">
+                        <span class="separator">-</span>
+                        <input type="number" placeholder="Hasta" aria-label="Maximum surface">
+                    </div>
+                </div>
+
+                <div class="filter-submit">
+                    <button type="button" class="btn btn-primary btn-search">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Property Listing Grid -->
+        <section class="property-section" style="margin-top: 0; padding-top: 0;">
             <div class="section-header">
-                <h2>Propiedades destacadas</h2>
-                <a href="properties.html" class="view-all">Ver todo <i class="fas fa-arrow-right"></i></a>
+                <h2>Todas las propiedades</h2>
+                <div class="sort-by">
+                    <span style="color: var(--text-muted); margin-right: 8px; font-weight: 500;">Ordenar por:</span>
+                    <select class="custom-select" style="width: 200px; display: inline-block;">
+                        <option value="recent">Más recientes</option>
+                        <option value="price-asc">Precio: Menor a Mayor</option>
+                        <option value="price-desc">Precio: Mayor a Menor</option>
+                    </select>
+                </div>
             </div>
 
             <div class="property-grid">
@@ -282,6 +281,82 @@
                     </div>
                 </article>
 
+                <!-- Property Card 7 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
+                            alt="Terreno en Venta">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                        </div>
+                        <div class="price">USD 45,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Terreno</span>
+                        <h3 class="property-title">Lote Premium para Desarrollo</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Carlos Paz, Periferia</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-vector-square"></i> 1500 m²</span>
+                            <span><i class="fas fa-water"></i> Servicios Listos</span>
+                        </div>
+                        <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
+                            zona tranquila y de rápido crecimiento.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 8 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
+                            alt="Terreno en Venta">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                        </div>
+                        <div class="price">USD 45,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Terreno</span>
+                        <h3 class="property-title">Lote Premium para Desarrollo</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Carlos Paz, Periferia</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-vector-square"></i> 1500 m²</span>
+                            <span><i class="fas fa-water"></i> Servicios Listos</span>
+                        </div>
+                        <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
+                            zona tranquila y de rápido crecimiento.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 9 -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
+                            alt="Terreno en Venta">
+                        <div class="badges">
+                            <span class="badge operation">Venta</span>
+                        </div>
+                        <div class="price">USD 45,000</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Terreno</span>
+                        <h3 class="property-title">Lote Premium para Desarrollo</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Carlos Paz, Periferia</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-vector-square"></i> 1500 m²</span>
+                            <span><i class="fas fa-water"></i> Servicios Listos</span>
+                        </div>
+                        <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
+                            zona tranquila y de rápido crecimiento.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+                <button class="btn btn-secondary" style="padding: 14px 32px;">Cargar más propiedades <i
+                        class="fas fa-spinner" style="margin-left: 8px;"></i></button>
             </div>
         </section>
 
@@ -291,7 +366,7 @@
     <footer class="footer">
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a href="#" class="logo">MI <span>Servicio Inmobiliario</span></a>
+                <a href="index.html" class="logo">MI <span>Servicio Inmobiliario</span></a>
                 <p>Tu propiedad en las mejores manos.</p>
                 <div class="social-links">
                     <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -303,11 +378,23 @@
                 <h3>Enlaces Rápidos</h3>
                 <ul>
                     <li><a href="index.html">Inicio</a></li>
-                    <li><a href="properties.html">Propiedades</a></li>
+                    <li><a href="properties.html">Propiedades en Venta</a></li>
+                    <li><a href="#">Propiedades en Alquiler</a></li>
+                    <li><a href="#">Agencias</a></li>
                     <li><a href="#">Sobre Nosotros</a></li>
                 </ul>
             </div>
 
+            <div class="footer-links">
+                <h3>Tipos de Propiedad</h3>
+                <ul>
+                    <li><a href="#">Departamentos</a></li>
+                    <li><a href="#">Casas y Chalets</a></li>
+                    <li><a href="#">Comerciales</a></li>
+                    <li><a href="#">Oficinas</a></li>
+                    <li><a href="#">Terrenos</a></li>
+                </ul>
+            </div>
 
             <div class="footer-contact">
                 <h3>Contacto</h3>
