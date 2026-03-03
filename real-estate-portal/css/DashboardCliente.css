@@ -1230,3 +1230,64 @@ body {
     color: #e53935;
     background: rgba(229, 57, 53, 0.08);
 }
+
+/* ===== DETALLE EXPENSAS: ARCHIVO ADJUNTO ===== */
+.expensas-archivo-item {
+    background: linear-gradient(135deg, #f8f9ff, #fff8f5) !important;
+    border-left: 4px solid var(--color-orange) !important;
+}
+
+.expensas-archivo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.expensas-archivo-nombre {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.87rem;
+    color: #555;
+    font-weight: 500;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.expensas-archivo-nombre i {
+    color: var(--color-orange);
+    flex-shrink: 0;
+}
+
+.btn-ver-archivo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, var(--color-dark), #2c3e50);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.btn-ver-archivo:hover {
+    background: linear-gradient(135deg, var(--color-orange), #e85d00);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(255, 69, 0, 0.28);
+}
+
+.btn-ver-archivo:active {
+    transform: translateY(0);
+}

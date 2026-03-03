@@ -249,6 +249,39 @@ function actualizarInmueble(seleccionado) {
             infoExpensas.textContent = expensasGuardadas ? `$${expensasGuardadas}` : datos.expensas_default;
         }
 
+        // ── Archivo adjunto de expensas ──
+        const archivoWrap = document.getElementById('expensasArchivoWrap');
+        const archivoNombreTexto = document.getElementById('expensasArchivoNombreTexto');
+        const btnVerArchivo = document.getElementById('btnVerArchivoExpensas');
+        const archivoGuardado = localStorage.getItem('expensas_archivo_' + seleccionado);
+
+        if (archivoWrap) {
+            if (archivoGuardado) {
+                const archivoData = JSON.parse(archivoGuardado);
+                archivoNombreTexto.textContent = archivoData.nombre;
+                archivoWrap.style.display = 'block';
+
+                // Reasignar listener para evitar duplicados
+                const btnNuevo = btnVerArchivo.cloneNode(true);
+                btnVerArchivo.parentNode.replaceChild(btnNuevo, btnVerArchivo);
+                btnNuevo.addEventListener('click', () => {
+                    // Convertir base64 a Blob y abrir en nueva pestaña
+                    const base64Data = archivoData.base64.split(',')[1];
+                    const mimeType = archivoData.tipo || 'application/octet-stream';
+                    const byteChars = atob(base64Data);
+                    const byteArray = new Uint8Array(byteChars.length);
+                    for (let i = 0; i < byteChars.length; i++) {
+                        byteArray[i] = byteChars.charCodeAt(i);
+                    }
+                    const blob = new Blob([byteArray], { type: mimeType });
+                    const blobUrl = URL.createObjectURL(blob);
+                    window.open(blobUrl, '_blank');
+                });
+            } else {
+                archivoWrap.style.display = 'none';
+            }
+        }
+
         // ── Alerta de aumento de expensas ──
         const alertaEl = document.getElementById('expensasAlerta');
         const alertaDetalleEl = document.getElementById('expensasAlertaDetalle');

@@ -219,6 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Cargar monto guardado para ese inmueble (ya guardado con formato es-AR)
             const monto = localStorage.getItem('expensas_' + key);
             montoExpensas.value = monto || '';
+            // Cargar archivo si ya fue subido previamente
+            const archivoGuardado = localStorage.getItem('expensas_archivo_' + key);
+            if (archivoGuardado) {
+                const datos = JSON.parse(archivoGuardado);
+                mostrarChipArchivo(datos.nombre);
+            } else {
+                limpiarArchivo();
+            }
         }
     });
 
@@ -291,14 +299,36 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadZone.classList.remove('has-file', 'drag-over');
     }
 
+    function guardarArchivoEnStorage(file) {
+        if (!selectedExpInmueble) {
+            mostrarAlerta('Seleccioná un inmueble en la sección de Expensas antes de adjuntar un archivo.', 'warning');
+            limpiarArchivo();
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const datos = {
+                nombre: file.name,
+                tipo: file.type,
+                base64: e.target.result
+            };
+            localStorage.setItem('expensas_archivo_' + selectedExpInmueble.key, JSON.stringify(datos));
+            mostrarChipArchivo(file.name);
+        };
+        reader.readAsDataURL(file);
+    }
+
     archivoInput.addEventListener('change', () => {
         if (archivoInput.files.length > 0) {
-            mostrarChipArchivo(archivoInput.files[0].name);
+            guardarArchivoEnStorage(archivoInput.files[0]);
         }
     });
 
     btnRemoveFile.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (selectedExpInmueble) {
+            localStorage.removeItem('expensas_archivo_' + selectedExpInmueble.key);
+        }
         limpiarArchivo();
     });
 
@@ -315,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadZone.classList.remove('drag-over');
         if (uploadZone.classList.contains('has-file')) return;
         const file = e.dataTransfer?.files?.[0];
-        if (file) mostrarChipArchivo(file.name);
+        if (file) guardarArchivoEnStorage(file);
     });
 
     btnEnviarMsg.addEventListener('click', () => {
