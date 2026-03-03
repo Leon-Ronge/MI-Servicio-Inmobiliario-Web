@@ -129,8 +129,7 @@ h6 {
    Header & Navbar
    ========================================= */
 .navbar {
-    position: sticky;
-    top: 0;
+    position: relative;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
