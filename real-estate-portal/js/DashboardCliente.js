@@ -272,27 +272,17 @@ function actualizarInmueble(seleccionado) {
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 
-                // Buscar archivos de alquiler y expensas - ahora en formato correcto
-                if ((key.startsWith('alquiler_archivo_' + seleccionado + '_') || key.startsWith('expensas_archivo_' + seleccionado + '_'))) {
+                // Buscar archivos de documento - formato: documento_archivo_[inmueble]_[timestamp]_[idx]
+                if (key.startsWith('documento_archivo_' + seleccionado + '_')) {
                     try {
                         const archivoData = JSON.parse(localStorage.getItem(key));
-                        
-                        // Extraer el tipo de documento (alquiler o expensas)
-                        const tipoDocumento = key.startsWith('alquiler_') ? 'Alquiler' : 'Expensas';
                         
                         // Crear card del archivo
                         const archivoCard = document.createElement('div');
                         archivoCard.className = 'archivo-card';
                         
-                        // Obtener icono según el tipo de documento
-                        const iconoTipo = tipoDocumento === 'Alquiler' ? 'fa-key' : 'fa-file-invoice-dollar';
-                        
                         archivoCard.innerHTML = `
-                            <div class="archivo-card-header" style="border-left: 4px solid ${tipoDocumento === 'Alquiler' ? '#1976d2' : '#e53935'};">
-                                <div class="archivo-card-title">
-                                    <i class="fas ${iconoTipo}" style="color: ${tipoDocumento === 'Alquiler' ? '#1976d2' : '#e53935'};"></i>
-                                    <span>${tipoDocumento}</span>
-                                </div>
+                            <div class="archivo-card-header">
                                 <span class="archivo-card-fecha">${archivoData.fecha || 'Sin fecha'}</span>
                             </div>
                             <div class="archivo-card-body">

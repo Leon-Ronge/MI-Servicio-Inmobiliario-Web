@@ -191,7 +191,7 @@
                         <span class="pago-card-monto" id="infoAlquiler" style="color: #1976d2;">$0</span>
                     </div>
 
-                 
+
 
                     <!-- Alerta de aumento de alquiler -->
                     <div class="expensas-alerta" id="alquilerAlerta" style="display:none;">
@@ -239,100 +239,98 @@
                 <div class="archivos-header">
                     <h2>Archivos Adjuntos</h2>
                 </div>
-
                 <div class="archivos-grid" id="gridArchivos">
                     <div class="empty-state">No hay archivos adjuntos.</div>
                 </div>
             </section>
 
-                <!-- ===== SECCIÓN: MENSAJES DEL ADMINISTRADOR ===== -->
-                <section class="notif-card">
-                    <div class="notif-header">
-                        <div class="notif-title">
-                            <i class="fas fa-bell"></i> Notificaciones
-                        </div>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span class="notif-badge" id="notifBadge">0</span>
-                            <button class="btn-mark-all" id="btnMarcarLeidos"><i class="fas fa-check-double"></i> Marcar
-                                todas como leídas</button>
-                        </div>
+            <!-- ===== SECCIÓN: MENSAJES DEL ADMINISTRADOR ===== -->
+            <section class="notif-card">
+                <div class="notif-header">
+                    <div class="notif-title">
+                        <i class="fas fa-bell"></i> Notificaciones
                     </div>
-                    <div class="notif-list" id="notifList">
-                        <div class="notif-empty">
-                            <i class="fas fa-inbox"></i>
-                            No tenés notificaciones nuevas.
-                        </div>
-                    </div>
-                </section>
-
-                <section class="servicios-container">
-                    <div class="servicios-header">
-                        <h2>Servicios</h2>
-                        <button id="btnAgregarServicio" class="agregar-btn">Agregar +</button>
-                    </div>
-
-                    <div class="servicios-grid" id="gridServicios">
-                        <div class="empty-state">No hay servicios activos.</div>
-                    </div>
-                </section>
-
-                <div id="modalChecklist" class="modal-overlay">
-                    <div class="modal-content">
-                        <span class="close-checklist close-modal">&times;</span>
-
-                        <div class="factura-header">
-                            <h2>Activar Servicios</h2>
-                            <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
-                        </div>
-
-                        <div class="checklist-container">
-                            <label class="checklist-item">
-                                <input type="checkbox" value="luz" checked>
-                                <div class="check-info">
-                                    <span class="check-title">Electricidad, </span>
-                                    <span class="check-desc">EPEC</span>
-                                </div>
-                            </label>
-
-                            <label class="checklist-item">
-                                <input type="checkbox" value="agua">
-                                <div class="check-info">
-                                    <span class="check-title">Agua, </span>
-                                    <span class="check-desc">Aguas Cordobesas</span>
-                                </div>
-                            </label>
-
-                            <label class="checklist-item">
-                                <input type="checkbox" value="gas">
-                                <div class="check-info">
-                                    <span class="check-title">Gas, </span>
-                                    <span class="check-desc">Ecogas</span>
-                                </div>
-                            </label>
-
-                            <label class="checklist-item">
-                                <input type="checkbox" value="internet">
-                                <div class="check-info">
-                                    <span class="check-title">Internet</span>
-                                    <span class="check-desc"></span>
-                                </div>
-                            </label>
-
-                            <label class="checklist-item">
-                                <input type="checkbox" value="admin">
-                                <div class="check-info">
-                                    <span class="check-title">Administración, </span>
-                                    <span class="check-desc">Expensas / Consorcio</span>
-                                </div>
-                            </label>
-                        </div>
-
-                        <button id="btnGuardarServicios" class="btn-download"
-                            style="background-color: var(--color-dark);">
-                            Confirmar y Mostrar
-                        </button>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="notif-badge" id="notifBadge">0</span>
+                        <button class="btn-mark-all" id="btnMarcarLeidos"><i class="fas fa-check-double"></i> Marcar
+                            todas como leídas</button>
                     </div>
                 </div>
+                <div class="notif-list" id="notifList">
+                    <div class="notif-empty">
+                        <i class="fas fa-inbox"></i>
+                        No tenés notificaciones nuevas.
+                    </div>
+                </div>
+            </section>
+
+            <section class="servicios-container">
+                <div class="servicios-header">
+                    <h2>Servicios</h2>
+                    <button id="btnAgregarServicio" class="agregar-btn">Agregar +</button>
+                </div>
+
+                <div class="servicios-grid" id="gridServicios">
+                    <div class="empty-state">No hay servicios activos.</div>
+                </div>
+            </section>
+
+            <div id="modalChecklist" class="modal-overlay">
+                <div class="modal-content">
+                    <span class="close-checklist close-modal">&times;</span>
+
+                    <div class="factura-header">
+                        <h2>Activar Servicios</h2>
+                        <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
+                    </div>
+
+                    <div class="checklist-container">
+                        <label class="checklist-item">
+                            <input type="checkbox" value="luz" checked>
+                            <div class="check-info">
+                                <span class="check-title">Electricidad, </span>
+                                <span class="check-desc">EPEC</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="agua">
+                            <div class="check-info">
+                                <span class="check-title">Agua, </span>
+                                <span class="check-desc">Aguas Cordobesas</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="gas">
+                            <div class="check-info">
+                                <span class="check-title">Gas, </span>
+                                <span class="check-desc">Ecogas</span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="internet">
+                            <div class="check-info">
+                                <span class="check-title">Internet</span>
+                                <span class="check-desc"></span>
+                            </div>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" value="admin">
+                            <div class="check-info">
+                                <span class="check-title">Administración, </span>
+                                <span class="check-desc">Expensas / Consorcio</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button id="btnGuardarServicios" class="btn-download" style="background-color: var(--color-dark);">
+                        Confirmar y Mostrar
+                    </button>
+                </div>
+            </div>
 
         </main>
 

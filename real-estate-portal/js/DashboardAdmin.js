@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedAlqInmueble = null; // { key, label } para alquiler
     let selectedExpInmueble = null; // { key, label } para expensas
     let selectedMsgInmueble = null; // { key, label } para mensajes
-    let selectedAdjTipo = null; // 'alquiler' o 'expensas' para adjuntos
     let selectedAdjInmueble = null; // { key, label } para adjuntos
 
     // Cards
@@ -332,13 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================================
-    //  AUTOCOMPLETE — TIPO DE DOCUMENTO (para Adjuntos)
-    // ============================================================
-    const tipoDocumentoInput = document.getElementById('tipoDocumentoInput');
-    const tipoDocumentoDropdown = document.getElementById('tipoDocumentoDropdown');
-    const tipoDocumentoChevron = document.getElementById('tipoDocumentoChevron');
-
-    // ============================================================
     //  AUTOCOMPLETE — INMUEBLE (para Adjuntos)
     // ============================================================
     const adjInmuebleInput = document.getElementById('adjInmuebleInput');
@@ -354,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const adjUploadFilesList = document.getElementById('adjUploadFilesList');
     const btnGuardarAdjunto = document.getElementById('btnGuardarAdjunto');
     const successMsgAdjuntos = document.getElementById('successMsgAdjuntos');
+    const adjuntosHistory = document.getElementById('adjuntosHistory');
+    const adjuntosHistoryList = document.getElementById('adjuntosHistoryList');
 
     let archivosSeleccionados = []; // Array para almacenar archivos seleccionados
 
@@ -386,22 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
         adjArchivoInput.value = '';
         renderizarListaArchivos();
     };
-
-    // Autocomplete para tipo de documento
-    crearAutocomplete({
-        inputEl: tipoDocumentoInput,
-        dropdownEl: tipoDocumentoDropdown,
-        chevronEl: tipoDocumentoChevron,
-        searchable: false,
-        getItems: () => [
-            { key: 'alquiler', label: 'Alquiler', icon: 'fa-key' },
-            { key: 'expensas', label: 'Expensas', icon: 'fa-file-invoice-dollar' }
-        ],
-        onSelect: (key, label) => {
-            tipoDocumentoInput.value = label;
-            selectedAdjTipo = key;
-        }
-    });
 
     // Autocomplete para inmueble
     crearAutocomplete({
@@ -449,7 +427,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Guardar adjuntos
     btnGuardarAdjunto.addEventListener('click', () => {
         if (!selectedClienteKey) { mostrarAlerta('Seleccioná un cliente primero.', 'warning'); return; }
-        if (!selectedAdjTipo) { mostrarAlerta('Seleccioná el tipo de documento.', 'warning'); return; }
         if (!selectedAdjInmueble) { mostrarAlerta('Seleccioná un inmueble.', 'warning'); return; }
         if (archivosSeleccionados.length === 0) { mostrarAlerta('Adjuntá al menos un archivo antes de guardar.', 'warning'); return; }
 
@@ -459,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         archivosSeleccionados.forEach((file, idx) => {
             const reader = new FileReader();
             reader.onload = (e) => {
-                const storageKey = selectedAdjTipo + '_archivo_' + selectedAdjInmueble.key + '_' + Date.now() + '_' + idx;
+                const storageKey = 'documento_archivo_' + selectedAdjInmueble.key + '_' + Date.now() + '_' + idx;
                 const datos = {
                     nombre: file.name,
                     tipo: file.type,
@@ -472,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Mostrar toast solo cuando se guardaron todos los archivos
                 if (archivosGuardados === totalArchivos) {
                     mostrarToast(successMsgAdjuntos);
+                    renderizarHistorialAdjuntos(selectedClienteKey);
                     limpiarAdjuntos();
                 }
             };
@@ -482,12 +460,83 @@ document.addEventListener('DOMContentLoaded', () => {
     function limpiarAdjuntos() {
         archivosSeleccionados = [];
         adjArchivoInput.value = '';
-        tipoDocumentoInput.value = '';
         adjInmuebleInput.value = '';
-        selectedAdjTipo = null;
         selectedAdjInmueble = null;
         renderizarListaArchivos();
     }
+
+    // Renderizar historial de archivos cargados
+    function renderizarHistorialAdjuntos(clienteKey) {
+        if (!clienteKey) {
+            adjuntosHistory.style.display = 'none';
+            return;
+        }
+
+        let archivosEncontrados = [];
+        
+        // Buscar en localStorage todos los archivos para este cliente
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('documento_archivo_')) {
+                const partes = key.split('_');
+                // Formato: documento_archivo_[inmueble]_[timestamp]_[idx]
+                const inmuebleKey = partes[2];
+                
+                // Verificar si este inmueble pertenece al cliente seleccionado
+                const cliente = clientesData[clienteKey];
+                if (cliente && cliente.inmuebles.some(inm => inm.key === inmuebleKey)) {
+                    try {
+                        const archivoData = JSON.parse(localStorage.getItem(key));
+                        archivosEncontrados.push({
+                            key: key,
+                            nombre: archivoData.nombre,
+                            fecha: archivoData.fecha,
+                            inmueble: cliente.inmuebles.find(inm => inm.key === inmuebleKey)?.label || inmuebleKey
+                        });
+                    } catch (e) {
+                        console.error('Error al procesar archivo:', e);
+                    }
+                }
+            }
+        }
+
+        if (archivosEncontrados.length === 0) {
+            adjuntosHistory.style.display = 'none';
+            return;
+        }
+
+        // Ordenar por fecha más reciente
+        archivosEncontrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        adjuntosHistoryList.innerHTML = archivosEncontrados.map(archivo => `
+            <div class="history-item">
+                <div class="history-item-info">
+                    <i class="fas fa-file-alt history-icon"></i>
+                    <div class="history-item-details">
+                        <div class="history-item-name">${archivo.nombre}</div>
+                        <div class="history-item-meta">
+                            <span><i class="fas fa-home"></i> ${archivo.inmueble}</span>
+                            <span><i class="fas fa-clock"></i> ${archivo.fecha}</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="history-item-delete" onclick="eliminarAdjunto('${clienteKey}', '${archivo.key.replace(/'/g, "\\'")}');" title="Eliminar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+
+        adjuntosHistory.style.display = 'block';
+    }
+
+    // Función global para eliminar archivos
+    window.eliminarAdjunto = (clienteKey, archivoKey) => {
+        if (!confirm('¿Estás seguro de que querés eliminar este archivo?')) return;
+        
+        localStorage.removeItem(archivoKey);
+        renderizarHistorialAdjuntos(clienteKey);
+        mostrarAlerta('Archivo eliminado con éxito.', 'info');
+    };
 
     // ============================================================
     //  MENSAJES
@@ -578,13 +627,12 @@ document.addEventListener('DOMContentLoaded', () => {
         montoExpensas.value = '';
 
         // Reset adjuntos
-        selectedAdjTipo = null;
         selectedAdjInmueble = null;
-        tipoDocumentoInput.value = '';
         adjInmuebleInput.value = '';
         archivosSeleccionados = [];
         adjArchivoInput.value = '';
         renderizarListaArchivos();
+        renderizarHistorialAdjuntos(key);
 
         // Reset mensajes
         selectedMsgInmueble = null;
@@ -625,14 +673,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tituloSpan) tituloSpan.textContent = '';
         selectedAlqInmueble = null;
         selectedExpInmueble = null;
-        selectedAdjTipo = null;
         selectedAdjInmueble = null;
         selectedMsgInmueble = null;
         AlqInmuebleInput.value = '';
         montoAlquiler.value = '';
         expInmuebleInput.value = '';
         montoExpensas.value = '';
-        tipoDocumentoInput.value = '';
         adjInmuebleInput.value = '';
         archivosSeleccionados = [];
         adjArchivoInput.value = '';
