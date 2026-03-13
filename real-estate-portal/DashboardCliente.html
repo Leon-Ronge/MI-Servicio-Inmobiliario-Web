@@ -71,42 +71,6 @@
                             <span class="detail-label"><i class="fas fa-user-tie"></i> Propietario</span>
                             <span class="detail-value" id="infoPropietario">León Rongé</span>
                         </div>
-
-                        <div class="inmueble-detail-item" style="border-left: 4px solid #e53935; background: #fff5f5;">
-                            <span class="detail-label" style="color: #e53935;"><i class="fas fa-file-invoice-dollar"
-                                    style="color: #e53935;"></i> Expensas a Pagar</span>
-                            <span class="detail-value highlight-value" id="infoExpensas"
-                                style="color: #e53935;">$0</span>
-                        </div>
-
-                        <!-- Detalle de Expensas: archivo adjunto por el admin -->
-                        <div id="expensasArchivoWrap" class="inmueble-detail-item expensas-archivo-item"
-                            style="display:none; grid-column: 1 / -1;">
-                            <span class="detail-label"><i class="fas fa-paperclip"></i> Detalle de Expensas</span>
-                            <div class="expensas-archivo-row">
-                                <span class="expensas-archivo-nombre" id="expensasArchivoNombre">
-                                    <i class="fas fa-file-alt"></i> <span id="expensasArchivoNombreTexto"></span>
-                                </span>
-                                <button class="btn-ver-archivo" id="btnVerArchivoExpensas">
-                                    <i class="fas fa-eye"></i> Ver archivo
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Alerta de aumento de expensas -->
-                        <div class="expensas-alerta" id="expensasAlerta" style="display:none;">
-                            <div class="expensas-alerta-icon">
-                                <i class="fas fa-arrow-trend-up"></i>
-                            </div>
-                            <div class="expensas-alerta-body">
-                                <div class="expensas-alerta-title">¡Aumento de Expensas!</div>
-                                <div class="expensas-alerta-detalle" id="expensasAlertaDetalle"></div>
-                            </div>
-                            <button class="expensas-alerta-close" id="btnCerrarAlertaExpensas" title="Descartar">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-
                     </div>
                 </section>
 
@@ -217,93 +181,158 @@
 
             </div>
 
-            <!-- ===== SECCIÓN: MENSAJES DEL ADMINISTRADOR ===== -->
-            <section class="notif-card">
-                <div class="notif-header">
-                    <div class="notif-title">
-                        <i class="fas fa-bell"></i> Notificaciones
+            <!-- ===== SECCIÓN: ALQUILER ===== -->
+            <section class="pagos-row">
+                <div class="pago-card pago-card-alquiler">
+                    <div class="pago-card-header" style="border-left: 4px solid #1976d2;">
+                        <div class="pago-card-title" style="color: #1976d2;">
+                            <i class="fas fa-home-lg-alt" style="color: #1976d2;"></i> Alquiler a Pagar
+                        </div>
+                        <span class="pago-card-monto" id="infoAlquiler" style="color: #1976d2;">$0</span>
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span class="notif-badge" id="notifBadge">0</span>
-                        <button class="btn-mark-all" id="btnMarcarLeidos"><i class="fas fa-check-double"></i> Marcar
-                            todas como leídas</button>
+
+                 
+
+                    <!-- Alerta de aumento de alquiler -->
+                    <div class="expensas-alerta" id="alquilerAlerta" style="display:none;">
+                        <div class="expensas-alerta-icon">
+                            <i class="fas fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="expensas-alerta-body">
+                            <div class="expensas-alerta-title">¡Aumento de Alquiler!</div>
+                            <div class="expensas-alerta-detalle" id="alquilerAlertaDetalle"></div>
+                        </div>
+                        <button class="expensas-alerta-close" id="btnCerrarAlertaAlquiler" title="Descartar">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="notif-list" id="notifList">
-                    <div class="notif-empty">
-                        <i class="fas fa-inbox"></i>
-                        No tenés notificaciones nuevas.
+
+                <!-- ===== SECCIÓN: EXPENSAS ===== -->
+                <div class="pago-card pago-card-expensas">
+                    <div class="pago-card-header" style="border-left: 4px solid #e53935;">
+                        <div class="pago-card-title" style="color: #e53935;">
+                            <i class="fas fa-file-invoice-dollar" style="color: #e53935;"></i> Expensas a Pagar
+                        </div>
+                        <span class="pago-card-monto" id="infoExpensas" style="color: #e53935;">$0</span>
+                    </div>
+
+                    <!-- Alerta de aumento de expensas -->
+                    <div class="expensas-alerta" id="expensasAlerta" style="display:none;">
+                        <div class="expensas-alerta-icon">
+                            <i class="fas fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="expensas-alerta-body">
+                            <div class="expensas-alerta-title">¡Aumento de Expensas!</div>
+                            <div class="expensas-alerta-detalle" id="expensasAlertaDetalle"></div>
+                        </div>
+                        <button class="expensas-alerta-close" id="btnCerrarAlertaExpensas" title="Descartar">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <section class="servicios-container">
-                <div class="servicios-header">
-                    <h2>Servicios</h2>
-                    <button id="btnAgregarServicio" class="agregar-btn">Agregar +</button>
+
+            <!-- Seccion archivos adjuntos -->
+            <section class="archivos-container">
+                <div class="archivos-header">
+                    <h2>Archivos Adjuntos</h2>
                 </div>
 
-                <div class="servicios-grid" id="gridServicios">
-                    <div class="empty-state">No hay servicios activos.</div>
+                <div class="archivos-grid" id="gridArchivos">
+                    <div class="empty-state">No hay archivos adjuntos.</div>
                 </div>
             </section>
 
-            <div id="modalChecklist" class="modal-overlay">
-                <div class="modal-content">
-                    <span class="close-checklist close-modal">&times;</span>
+                <!-- ===== SECCIÓN: MENSAJES DEL ADMINISTRADOR ===== -->
+                <section class="notif-card">
+                    <div class="notif-header">
+                        <div class="notif-title">
+                            <i class="fas fa-bell"></i> Notificaciones
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="notif-badge" id="notifBadge">0</span>
+                            <button class="btn-mark-all" id="btnMarcarLeidos"><i class="fas fa-check-double"></i> Marcar
+                                todas como leídas</button>
+                        </div>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-empty">
+                            <i class="fas fa-inbox"></i>
+                            No tenés notificaciones nuevas.
+                        </div>
+                    </div>
+                </section>
 
-                    <div class="factura-header">
-                        <h2>Activar Servicios</h2>
-                        <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
+                <section class="servicios-container">
+                    <div class="servicios-header">
+                        <h2>Servicios</h2>
+                        <button id="btnAgregarServicio" class="agregar-btn">Agregar +</button>
                     </div>
 
-                    <div class="checklist-container">
-                        <label class="checklist-item">
-                            <input type="checkbox" value="luz" checked>
-                            <div class="check-info">
-                                <span class="check-title">Electricidad, </span>
-                                <span class="check-desc">EPEC</span>
-                            </div>
-                        </label>
-
-                        <label class="checklist-item">
-                            <input type="checkbox" value="agua">
-                            <div class="check-info">
-                                <span class="check-title">Agua, </span>
-                                <span class="check-desc">Aguas Cordobesas</span>
-                            </div>
-                        </label>
-
-                        <label class="checklist-item">
-                            <input type="checkbox" value="gas">
-                            <div class="check-info">
-                                <span class="check-title">Gas, </span>
-                                <span class="check-desc">Ecogas</span>
-                            </div>
-                        </label>
-
-                        <label class="checklist-item">
-                            <input type="checkbox" value="internet">
-                            <div class="check-info">
-                                <span class="check-title">Internet</span>
-                                <span class="check-desc"></span>
-                            </div>
-                        </label>
-
-                        <label class="checklist-item">
-                            <input type="checkbox" value="admin">
-                            <div class="check-info">
-                                <span class="check-title">Administración, </span>
-                                <span class="check-desc">Expensas / Consorcio</span>
-                            </div>
-                        </label>
+                    <div class="servicios-grid" id="gridServicios">
+                        <div class="empty-state">No hay servicios activos.</div>
                     </div>
+                </section>
 
-                    <button id="btnGuardarServicios" class="btn-download" style="background-color: var(--color-dark);">
-                        Confirmar y Mostrar
-                    </button>
+                <div id="modalChecklist" class="modal-overlay">
+                    <div class="modal-content">
+                        <span class="close-checklist close-modal">&times;</span>
+
+                        <div class="factura-header">
+                            <h2>Activar Servicios</h2>
+                            <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
+                        </div>
+
+                        <div class="checklist-container">
+                            <label class="checklist-item">
+                                <input type="checkbox" value="luz" checked>
+                                <div class="check-info">
+                                    <span class="check-title">Electricidad, </span>
+                                    <span class="check-desc">EPEC</span>
+                                </div>
+                            </label>
+
+                            <label class="checklist-item">
+                                <input type="checkbox" value="agua">
+                                <div class="check-info">
+                                    <span class="check-title">Agua, </span>
+                                    <span class="check-desc">Aguas Cordobesas</span>
+                                </div>
+                            </label>
+
+                            <label class="checklist-item">
+                                <input type="checkbox" value="gas">
+                                <div class="check-info">
+                                    <span class="check-title">Gas, </span>
+                                    <span class="check-desc">Ecogas</span>
+                                </div>
+                            </label>
+
+                            <label class="checklist-item">
+                                <input type="checkbox" value="internet">
+                                <div class="check-info">
+                                    <span class="check-title">Internet</span>
+                                    <span class="check-desc"></span>
+                                </div>
+                            </label>
+
+                            <label class="checklist-item">
+                                <input type="checkbox" value="admin">
+                                <div class="check-info">
+                                    <span class="check-title">Administración, </span>
+                                    <span class="check-desc">Expensas / Consorcio</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <button id="btnGuardarServicios" class="btn-download"
+                            style="background-color: var(--color-dark);">
+                            Confirmar y Mostrar
+                        </button>
+                    </div>
                 </div>
-            </div>
 
         </main>
 

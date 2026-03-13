@@ -929,6 +929,11 @@ body {
         gap: 14px;
     }
 
+    .pagos-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
     .contactos-utiles-card {
         width: 100%;
         padding: 22px;
@@ -1031,6 +1036,23 @@ body {
     .card-body-inmueble {
         grid-template-columns: 1fr;
         gap: 10px;
+    }
+
+    .pagos-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .pago-card {
+        padding: 16px;
+    }
+
+    .pago-card-header {
+        padding: 12px;
+    }
+
+    .pago-card-monto {
+        font-size: 1.5rem;
     }
 
     .inmueble-detail-item {
@@ -1246,6 +1268,147 @@ body {
     color: var(--color-orange);
 }
 
+/* ===== SECCIÓN PAGOS (ALQUILER Y EXPENSAS) ===== */
+.pagos-row {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.pago-card {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pago-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid;
+}
+
+.pago-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pago-card-monto {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.pago-card-archivo {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pago-card-archivo .detail-label {
+    margin-bottom: 10px;
+}
+
+/* ===== ESTILOS PARA ARCHIVOS ADJUNTOS EN CLIENTE ===== */
+.archivo-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.archivo-section-title i {
+    color: #ff4400;
+}
+
+.archivo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.archivo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.archivo-item:hover {
+    border-color: #ff4400;
+    box-shadow: 0 2px 8px rgba(255, 68, 0, 0.1);
+}
+
+.archivo-nombre {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #333;
+    flex: 1;
+    word-break: break-word;
+}
+
+.archivo-nombre i {
+    color: #ff4400;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.btn-ver-archivo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #212529;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-ver-archivo:hover {
+    background-color: #ff4400;
+    box-shadow: 0 4px 12px rgba(255, 68, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.btn-ver-archivo i {
+    font-size: 0.9rem;
+}
+
 /* ===== ALERTA DE AUMENTO DE EXPENSAS ===== */
 .expensas-alerta {
     display: none;
@@ -1421,4 +1584,112 @@ body {
 
 .btn-ver-archivo:active {
     transform: translateY(0);
+}
+
+/* ===== ESTILOS PARA GRID DE ARCHIVOS ADJUNTOS ===== */
+.archivos-container {
+    margin-top: 30px;
+    padding: 0;
+}
+
+.archivos-header {
+    margin-bottom: 20px;
+}
+
+.archivos-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-dark);
+    margin: 0;
+}
+
+.archivos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.archivo-card {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.archivo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.archivo-card-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    border-left: 4px solid var(--color-orange);
+}
+
+.archivo-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.archivo-card-title i {
+    font-size: 1.2rem;
+}
+
+.archivo-card-fecha {
+    font-size: 0.75rem;
+    color: #999;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.archivo-card-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+.archivo-card-body .archivo-item {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.archivo-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.archivo-icon {
+    font-size: 1.5rem;
+    color: var(--color-orange);
+    flex-shrink: 0;
+}
+
+.archivo-nombre {
+    font-size: 0.9rem;
+    color: var(--color-dark);
+    font-weight: 500;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.btn-ver-archivo {
+    width: 100%;
+    text-align: center;
 }

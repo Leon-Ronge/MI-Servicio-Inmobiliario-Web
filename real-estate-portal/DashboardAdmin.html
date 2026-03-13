@@ -52,6 +52,38 @@
                 </div>
             </section>
 
+            <!-- ===== CARD: ALQUILER ===== -->
+            <section class="admin-card card-bloqueada" id="cardAlquiler">
+                <div class="card-section-title">
+                    <i class="fas fa-file-invoice-dollar"></i> Gestión de Alquiler
+                </div>
+
+                <div id="successMsgAlquiler" class="success-toast">
+                    <i class="fas fa-check-circle"></i> Alquiler actualizado con éxito.
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-home"></i> &nbsp;Inmueble del cliente</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="AlqInmuebleInput" class="autocomplete-input"
+                            placeholder="Seleccioná un inmueble..." autocomplete="off" readonly>
+                        <i class="fas fa-chevron-down autocomplete-icon" id="AlqInmuebleChevron"></i>
+                        <div class="autocomplete-dropdown" id="AlqInmuebleDropdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="montoAlquiler"><i class="fas fa-dollar-sign"></i> &nbsp;Monto de Alquiler a Pagar
+                        ($)</label>
+                    <input type="text" id="montoAlquiler" class="input-number" placeholder="Ej: 52.000,00"
+                        inputmode="numeric" required>
+                </div>
+
+                <button id="btnGuardarAlquiler" class="btn-action">
+                    <i class="fas fa-save"></i> Guardar Monto
+                </button>
+            </section>
+
             <!-- ===== CARD: EXPENSAS ===== -->
             <section class="admin-card card-bloqueada" id="cardExpensas">
                 <div class="card-section-title">
@@ -79,29 +111,58 @@
                         inputmode="numeric" required>
                 </div>
 
-                <!-- Adjunto de archivo -->
-                <div class="form-group" id="msgArchivoGroup" style="display:none;">
-                    <label><i class="fas fa-paperclip"></i> &nbsp;Adjuntar archivo (opcional)</label>
-                    <div class="upload-zone" id="uploadZone">
-                        <input type="file" id="archivoInput" class="upload-input" accept="*/*">
-                        <div class="upload-zone-content" id="uploadZoneContent">
+                <button id="btnGuardarExpensas" class="btn-action">
+                    <i class="fas fa-save"></i> Guardar Monto
+                </button>
+            </section>
+
+            <!-- ===== CARD: GESTIÓN DE ADJUNTOS ===== -->
+            <section class="admin-card card-bloqueada" id="cardAdjuntos">
+                <div class="card-section-title">
+                    <i class="fas fa-file-upload"></i> Gestión de Adjuntos
+                </div>
+
+                <div id="successMsgAdjuntos" class="success-toast">
+                    <i class="fas fa-check-circle"></i> Archivo(s) guardado(s) con éxito.
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-list"></i> &nbsp;Tipo de documento</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="tipoDocumentoInput" class="autocomplete-input"
+                            placeholder="Seleccioná el tipo de documento..." autocomplete="off" readonly>
+                        <i class="fas fa-chevron-down autocomplete-icon" id="tipoDocumentoChevron"></i>
+                        <div class="autocomplete-dropdown" id="tipoDocumentoDropdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-home"></i> &nbsp;Inmueble</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="adjInmuebleInput" class="autocomplete-input"
+                            placeholder="Seleccioná un inmueble..." autocomplete="off" readonly>
+                        <i class="fas fa-chevron-down autocomplete-icon" id="adjInmuebleChevron"></i>
+                        <div class="autocomplete-dropdown" id="adjInmuebleDropdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-paperclip"></i> &nbsp;Adjuntar archivos</label>
+                    <div class="upload-zone" id="adjUploadZone">
+                        <input type="file" id="adjArchivoInput" class="upload-input" accept="*/*" multiple>
+                        <div class="upload-zone-content" id="adjUploadZoneContent">
                             <i class="fas fa-cloud-upload-alt upload-zone-icon"></i>
-                            <span class="upload-zone-text">Hacé clic o arrastrá un archivo aquí</span>
+                            <span class="upload-zone-text">Hacé clic o arrastrá archivos aquí</span>
                             <span class="upload-zone-hint">PDF, imagen, Word, Excel…</span>
                         </div>
-                        <!-- Preview del archivo cargado -->
-                        <div class="upload-file-chip" id="uploadFileChip" style="display:none;">
-                            <i class="fas fa-file-alt chip-icon"></i>
-                            <span class="chip-name" id="chipFileName"></span>
-                            <button class="chip-remove" id="btnRemoveFile" title="Quitar archivo" type="button">
-                                <i class="fas fa-times"></i>
-                            </button>
+                        <!-- Preview de archivos cargados -->
+                        <div class="upload-files-list" id="adjUploadFilesList" style="display:none;">
                         </div>
                     </div>
                 </div>
 
-                <button id="btnGuardarExpensas" class="btn-action">
-                    <i class="fas fa-save"></i> Guardar Monto
+                <button id="btnGuardarAdjunto" class="btn-action">
+                    <i class="fas fa-save"></i> Guardar Adjunto
                 </button>
             </section>
 

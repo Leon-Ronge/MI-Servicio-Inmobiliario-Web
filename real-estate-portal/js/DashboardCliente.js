@@ -1,35 +1,36 @@
-const slider = document.querySelector('.servicios-grid');
+// Inicializar drag-scroll para servicios grid
+document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.querySelector('.servicios-grid');
+    if (slider) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
 
-let isDown = false;
-let startX;
-let scrollLeft;
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
 
-slider.addEventListener('mousedown', (e) => {
-    isDown = true;
-    slider.classList.add('active');
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
 
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-});
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
 
-slider.addEventListener('mouseleave', () => {
-    isDown = false;
-    slider.classList.remove('active');
-});
-
-slider.addEventListener('mouseup', () => {
-    isDown = false;
-    slider.classList.remove('active');
-});
-
-slider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX);
-
-    slider.scrollLeft = scrollLeft - walk;
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX);
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    }
 });
 
 const datosServicios = {
@@ -74,52 +75,62 @@ const gridServicios = document.getElementById('gridServicios');
 const closeChecklist = document.querySelector('.close-checklist');
 
 /* --- MANEJO DEL MODAL --- */
-btnAgregar.addEventListener('click', () => {
-    modalChecklist.style.display = 'flex';
-});
+if (btnAgregar) {
+    btnAgregar.addEventListener('click', () => {
+        modalChecklist.style.display = 'flex';
+    });
+}
 
-closeChecklist.addEventListener('click', () => {
-    modalChecklist.style.display = 'none';
-});
+if (closeChecklist) {
+    closeChecklist.addEventListener('click', () => {
+        modalChecklist.style.display = 'none';
+    });
+}
 
-window.addEventListener('click', (e) => {
-    if (e.target == modalChecklist) modalChecklist.style.display = 'none';
-});
+if (modalChecklist) {
+    window.addEventListener('click', (e) => {
+        if (e.target == modalChecklist) modalChecklist.style.display = 'none';
+    });
+}
 
 /* --- GENERACIÓN Y EDICIÓN DE CARDS --- */
-btnGuardarServicios.addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('.checklist-container input[type="checkbox"]:checked');
-    const checkedValues = Array.from(checkboxes).map(cb => cb.value);
-    // 1. Eliminar cards no seleccionadas
-    const currentCards = document.querySelectorAll('.service-card-simple');
-    currentCards.forEach(card => {
-        const id = card.getAttribute('data-id');
-        if (!checkedValues.includes(id)) {
-            card.remove();
-        }
-    });
-    // 2. Mostrar mensaje si no hay servicios seleccionados
-    if (checkedValues.length === 0) {
-        gridServicios.innerHTML = '<div class="empty-state">No hay servicios seleccionados.</div>';
-    } else {
-        const emptyMsg = gridServicios.querySelector('.empty-state');
-        if (emptyMsg) emptyMsg.remove();
-    }
-    // 3. Agregar nuevas cards seleccionadas
-    checkboxes.forEach(chk => {
-        const key = chk.value;
-        const existingCard = gridServicios.querySelector(`.service-card-simple[data-id="${key}"]`);
-
-        if (!existingCard) {
-            const data = datosServicios[key];
-            if (data) {
-                crearCard(key, data);
+if (btnGuardarServicios) {
+    btnGuardarServicios.addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.checklist-container input[type="checkbox"]:checked');
+        const checkedValues = Array.from(checkboxes).map(cb => cb.value);
+        // 1. Eliminar cards no seleccionadas
+        const currentCards = document.querySelectorAll('.service-card-simple');
+        currentCards.forEach(card => {
+            const id = card.getAttribute('data-id');
+            if (!checkedValues.includes(id)) {
+                card.remove();
             }
+        });
+        // 2. Mostrar mensaje si no hay servicios seleccionados
+        if (checkedValues.length === 0) {
+            gridServicios.innerHTML = '<div class="empty-state">No hay servicios seleccionados.</div>';
+        } else {
+            const emptyMsg = gridServicios.querySelector('.empty-state');
+            if (emptyMsg) emptyMsg.remove();
+        }
+        // 3. Agregar nuevas cards seleccionadas
+        checkboxes.forEach(chk => {
+            const key = chk.value;
+            const existingCard = gridServicios.querySelector(`.service-card-simple[data-id="${key}"]`);
+
+            if (!existingCard) {
+                const data = datosServicios[key];
+                if (data) {
+                    crearCard(key, data);
+                }
+            }
+        });
+
+        if (modalChecklist) {
+            modalChecklist.style.display = 'none';
         }
     });
-
-    modalChecklist.style.display = 'none';
-});
+}
 
 function crearCard(key, data) {
     const card = document.createElement('div');
@@ -233,6 +244,7 @@ const infoDireccion = document.getElementById('infoDireccion');
 const infoEdificio = document.getElementById('infoEdificio');
 const infoDepto = document.getElementById('infoDepto');
 const infoPropietario = document.getElementById('infoPropietario');
+const infoAlquiler = document.getElementById('infoAlquiler');
 const infoExpensas = document.getElementById('infoExpensas');
 
 function actualizarInmueble(seleccionado) {
@@ -243,43 +255,100 @@ function actualizarInmueble(seleccionado) {
         infoDepto.textContent = datos.depto;
         infoPropietario.textContent = datos.propietario;
 
-        // Cargar expensas guardadas por el admin desde localStorage o usar default
+        // Cargar alquiler guardado por el admin desde localStorage
+        const alquilerGuardado = localStorage.getItem('alquiler_' + seleccionado);
+        if (infoAlquiler) {
+            infoAlquiler.textContent = alquilerGuardado ? `$${alquilerGuardado}` : '$0';
+        }
+
+        // ── Cargar archivos adjuntos (Alquiler y Expensas) ──
+        const gridArchivos = document.getElementById('gridArchivos');
+        if (gridArchivos) {
+            gridArchivos.innerHTML = ''; // Limpiar la grid
+            
+            let archivosEncontrados = false;
+            
+            // Buscar en localStorage todos los archivos para este inmueble
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                
+                // Buscar archivos de alquiler y expensas - ahora en formato correcto
+                if ((key.startsWith('alquiler_archivo_' + seleccionado + '_') || key.startsWith('expensas_archivo_' + seleccionado + '_'))) {
+                    try {
+                        const archivoData = JSON.parse(localStorage.getItem(key));
+                        
+                        // Extraer el tipo de documento (alquiler o expensas)
+                        const tipoDocumento = key.startsWith('alquiler_') ? 'Alquiler' : 'Expensas';
+                        
+                        // Crear card del archivo
+                        const archivoCard = document.createElement('div');
+                        archivoCard.className = 'archivo-card';
+                        
+                        // Obtener icono según el tipo de documento
+                        const iconoTipo = tipoDocumento === 'Alquiler' ? 'fa-key' : 'fa-file-invoice-dollar';
+                        
+                        archivoCard.innerHTML = `
+                            <div class="archivo-card-header" style="border-left: 4px solid ${tipoDocumento === 'Alquiler' ? '#1976d2' : '#e53935'};">
+                                <div class="archivo-card-title">
+                                    <i class="fas ${iconoTipo}" style="color: ${tipoDocumento === 'Alquiler' ? '#1976d2' : '#e53935'};"></i>
+                                    <span>${tipoDocumento}</span>
+                                </div>
+                                <span class="archivo-card-fecha">${archivoData.fecha || 'Sin fecha'}</span>
+                            </div>
+                            <div class="archivo-card-body">
+                                <div class="archivo-item">
+                                    <div class="archivo-info">
+                                        <i class="fas fa-file-alt archivo-icon"></i>
+                                        <span class="archivo-nombre">${archivoData.nombre}</span>
+                                    </div>
+                                    <button class="btn-ver-archivo" data-key="${key}">
+                                        <i class="fas fa-download"></i> Descargar
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        gridArchivos.appendChild(archivoCard);
+                        archivosEncontrados = true;
+                    } catch (e) {
+                        console.error('Error al procesar archivo:', e);
+                    }
+                }
+            }
+            
+            // Si no hay archivos, mostrar mensaje vacío
+            if (!archivosEncontrados) {
+                gridArchivos.innerHTML = '<div class="empty-state">No hay archivos adjuntos.</div>';
+            }
+        }
+        
+        // Cargar expensas guardadas por el admin desde localStorage o usar default ──
         const expensasGuardadas = localStorage.getItem('expensas_' + seleccionado);
         if (infoExpensas) {
             infoExpensas.textContent = expensasGuardadas ? `$${expensasGuardadas}` : datos.expensas_default;
         }
 
-        // ── Archivo adjunto de expensas ──
-        const archivoWrap = document.getElementById('expensasArchivoWrap');
-        const archivoNombreTexto = document.getElementById('expensasArchivoNombreTexto');
-        const btnVerArchivo = document.getElementById('btnVerArchivoExpensas');
-        const archivoGuardado = localStorage.getItem('expensas_archivo_' + seleccionado);
+        // ── Alerta de aumento de alquiler ──
+        const alertaAlquilerEl = document.getElementById('alquilerAlerta');
+        const alertaAlquilerDetalleEl = document.getElementById('alquilerAlertaDetalle');
+        const alertaAlquilerKey = 'alquiler_alerta_' + seleccionado;
+        const alertaAlquilerData = localStorage.getItem(alertaAlquilerKey);
 
-        if (archivoWrap) {
-            if (archivoGuardado) {
-                const archivoData = JSON.parse(archivoGuardado);
-                archivoNombreTexto.textContent = archivoData.nombre;
-                archivoWrap.style.display = 'block';
-
-                // Reasignar listener para evitar duplicados
-                const btnNuevo = btnVerArchivo.cloneNode(true);
-                btnVerArchivo.parentNode.replaceChild(btnNuevo, btnVerArchivo);
-                btnNuevo.addEventListener('click', () => {
-                    // Convertir base64 a Blob y abrir en nueva pestaña
-                    const base64Data = archivoData.base64.split(',')[1];
-                    const mimeType = archivoData.tipo || 'application/octet-stream';
-                    const byteChars = atob(base64Data);
-                    const byteArray = new Uint8Array(byteChars.length);
-                    for (let i = 0; i < byteChars.length; i++) {
-                        byteArray[i] = byteChars.charCodeAt(i);
-                    }
-                    const blob = new Blob([byteArray], { type: mimeType });
-                    const blobUrl = URL.createObjectURL(blob);
-                    window.open(blobUrl, '_blank');
-                });
-            } else {
-                archivoWrap.style.display = 'none';
-            }
+        if (alertaAlquilerEl && alertaAlquilerData) {
+            const alerta = JSON.parse(alertaAlquilerData);
+            alertaAlquilerDetalleEl.innerHTML =
+                `<span class="alerta-monto-ant">$${alerta.anterior}</span>
+                 <i class="fas fa-long-arrow-alt-right"></i>
+                 <span class="alerta-monto-nuevo">$${alerta.nuevo}</span>
+                 <span class="alerta-fecha">${alerta.fecha}</span>`;
+            alertaAlquilerEl.style.display = 'flex';
+            // Animación de entrada
+            alertaAlquilerEl.classList.remove('alerta-visible');
+            void alertaAlquilerEl.offsetWidth; // reflow para reiniciar animación
+            alertaAlquilerEl.classList.add('alerta-visible');
+        } else if (alertaAlquilerEl) {
+            alertaAlquilerEl.style.display = 'none';
+            alertaAlquilerEl.classList.remove('alerta-visible');
         }
 
         // ── Alerta de aumento de expensas ──
@@ -323,18 +392,75 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
 
-// 3. Evento de cambio
-selectorInmueble.addEventListener('change', (e) => {
-    actualizarInmueble(e.target.value);
-});
-
-// Cargar estado inicial
-document.addEventListener('DOMContentLoaded', () => {
-    if (selectorInmueble) {
-        actualizarInmueble(selectorInmueble.value);
+    // Botón cerrar alerta alquiler
+    const btnCerrarAlquiler = document.getElementById('btnCerrarAlertaAlquiler');
+    if (btnCerrarAlquiler) {
+        btnCerrarAlquiler.addEventListener('click', () => {
+            const inmuebleActual = selectorInmueble ? selectorInmueble.value : null;
+            if (inmuebleActual) {
+                localStorage.removeItem('alquiler_alerta_' + inmuebleActual);
+            }
+            const alertaEl = document.getElementById('alquilerAlerta');
+            if (alertaEl) {
+                alertaEl.classList.remove('alerta-visible');
+                setTimeout(() => { alertaEl.style.display = 'none'; }, 300);
+            }
+        });
     }
+});
+
+// 3. Evento de cambio y cargar estado inicial
+document.addEventListener('DOMContentLoaded', () => {
+    const selector = document.getElementById('selectorInmueble');
+    if (selector) {
+        // Registrar evento de cambio
+        selector.addEventListener('change', (e) => {
+            actualizarInmueble(e.target.value);
+        });
+        
+        // Cargar estado inicial
+        actualizarInmueble(selector.value);
+    }
+    
+    // Usar event delegation para descargas de archivos (una sola vez)
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-ver-archivo')) {
+            e.preventDefault();
+            const btn = e.target.closest('.btn-ver-archivo');
+            const key = btn.getAttribute('data-key');
+            const archivoData = JSON.parse(localStorage.getItem(key));
+            
+            if (archivoData && archivoData.base64) {
+                // Convertir base64 a Blob y descargar
+                const base64Data = archivoData.base64.includes(',') 
+                    ? archivoData.base64.split(',')[1] 
+                    : archivoData.base64;
+                const mimeType = archivoData.tipo || 'application/octet-stream';
+                
+                try {
+                    const byteChars = atob(base64Data);
+                    const byteArray = new Uint8Array(byteChars.length);
+                    for (let i = 0; i < byteChars.length; i++) {
+                        byteArray[i] = byteChars.charCodeAt(i);
+                    }
+                    const blob = new Blob([byteArray], { type: mimeType });
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // Crear un link temporal para descargar
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = archivoData.nombre || 'descarga';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl);
+                } catch (err) {
+                    console.error('Error descargando archivo:', err);
+                }
+            }
+        }
+    });
 });
 
 /* ===== NOTIFICACIONES DEL ADMIN ===== */

@@ -50,11 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Estado global
     let selectedClienteKey = null;
+    let selectedAlqInmueble = null; // { key, label } para alquiler
     let selectedExpInmueble = null; // { key, label } para expensas
     let selectedMsgInmueble = null; // { key, label } para mensajes
+    let selectedAdjTipo = null; // 'alquiler' o 'expensas' para adjuntos
+    let selectedAdjInmueble = null; // { key, label } para adjuntos
 
     // Cards
+    const cardAlquiler = document.getElementById('cardAlquiler');
     const cardExpensas = document.getElementById('cardExpensas');
+    const cardAdjuntos = document.getElementById('cardAdjuntos');
     const cardMensajes = document.getElementById('cardMensajes');
 
     // ============================================================
@@ -154,6 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================================
+    //  AUTOCOMPLETE — INMUEBLE ALQUILER
+    // ============================================================
+    const AlqInmuebleInput = document.getElementById('AlqInmuebleInput');
+    const AlqInmuebleDropdown = document.getElementById('AlqInmuebleDropdown');
+    const AlqInmuebleChevron = document.getElementById('AlqInmuebleChevron');
+    const montoAlquiler = document.getElementById('montoAlquiler');
+    const btnGuardarAlquiler = document.getElementById('btnGuardarAlquiler');
+    const successMsgAlquiler = document.getElementById('successMsgAlquiler');
+
+    // ============================================================
     //  AUTOCOMPLETE — INMUEBLE EXPENSAS
     // ============================================================
     const expInmuebleInput = document.getElementById('expInmuebleInput');
@@ -176,39 +191,104 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseFloat(str.replace(/\./g, '').replace(',', '.'));
     }
 
-    // Formateo en tiempo real mientras el usuario escribe
-    montoExpensas.addEventListener('input', () => {
-        const raw = montoExpensas.value;
-        // Extraer solo dígitos y una coma (parte decimal)
-        const onlyDigits = raw.replace(/[^0-9,]/g, '');
-        const parts = onlyDigits.split(',');
-        const intPart = parts[0].replace(/^0+(?=\d)/, '') || '0';
-        const decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
+    // Función para formatear monto en tiempo real
+    function agregarFormatoMontoListener(inputEl) {
+        inputEl.addEventListener('input', () => {
+            const raw = inputEl.value;
+            // Extraer solo dígitos y una coma (parte decimal)
+            const onlyDigits = raw.replace(/[^0-9,]/g, '');
+            const parts = onlyDigits.split(',');
+            const intPart = parts[0].replace(/^0+(?=\d)/, '') || '0';
+            const decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
 
-        // Formatear parte entera con puntos de miles
-        const intFormatted = Number(intPart).toLocaleString('es-AR');
+            // Formatear parte entera con puntos de miles
+            const intFormatted = Number(intPart).toLocaleString('es-AR');
 
-        // Reconstruir valor
-        montoExpensas.value = decPart !== null
-            ? intFormatted + ',' + decPart
-            : intFormatted === '0' ? '' : intFormatted;
+            // Reconstruir valor
+            inputEl.value = decPart !== null
+                ? intFormatted + ',' + decPart
+                : intFormatted === '0' ? '' : intFormatted;
+        });
+
+        // Bloquear teclas no permitidas
+        inputEl.addEventListener('keydown', (e) => {
+            const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'];
+            const isDigit = /^[0-9]$/.test(e.key);
+            const isComa = e.key === ',';
+            const hasComa = inputEl.value.includes(',');
+            if (!isDigit && !isComa && !allowed.includes(e.key)) e.preventDefault();
+            if (isComa && hasComa) e.preventDefault();
+        });
+    }
+
+    // Aplicar formateo a ambos inputs de monto
+    agregarFormatoMontoListener(montoAlquiler);
+    agregarFormatoMontoListener(montoExpensas);
+
+    // ============================================================
+    //  AUTOCOMPLETE — INMUEBLE ALQUILER
+    // ============================================================
+    crearAutocomplete({
+        inputEl: AlqInmuebleInput,
+        dropdownEl: AlqInmuebleDropdown,
+        chevronEl: AlqInmuebleChevron,
+        searchable: false,
+        getItems: () => {
+            if (!selectedClienteKey) return [];
+            return clientesData[selectedClienteKey].inmuebles.map(inm => ({ key: inm.key, label: inm.label, icon: 'fa-home' }));
+        },
+        onSelect: (key, label) => {
+            AlqInmuebleInput.value = label;
+            selectedAlqInmueble = { key, label };
+            const monto = localStorage.getItem('alquiler_' + key);
+            montoAlquiler.value = monto || '';
+            
+            // Preseleccionar el mismo inmueble en Expensas
+            selectedExpInmueble = { key, label };
+            expInmuebleInput.value = label;
+            const montoExp = localStorage.getItem('expensas_' + key);
+            montoExpensas.value = montoExp || '';
+        }
     });
 
-    // Bloquear teclas no permitidas
-    montoExpensas.addEventListener('keydown', (e) => {
-        const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'];
-        const isDigit = /^[0-9]$/.test(e.key);
-        const isComa = e.key === ',';
-        const hasComa = montoExpensas.value.includes(',');
-        if (!isDigit && !isComa && !allowed.includes(e.key)) e.preventDefault();
-        if (isComa && hasComa) e.preventDefault();
+    btnGuardarAlquiler.addEventListener('click', () => {
+        if (!selectedAlqInmueble) { mostrarAlerta('Seleccioná un inmueble primero.', 'warning'); return; }
+        const rawMonto = montoAlquiler.value.trim();
+        const montoNuevo = parsearMonto(rawMonto);
+        if (!rawMonto || isNaN(montoNuevo) || montoNuevo < 0) { mostrarAlerta('Por favor ingresá un monto válido.', 'error'); return; }
+
+        const storageKey = 'alquiler_' + selectedAlqInmueble.key;
+        const montoAnteriorStr = localStorage.getItem(storageKey);
+        let montoAnterior = 0;
+        if (montoAnteriorStr) {
+            montoAnterior = parsearMonto(montoAnteriorStr);
+        }
+
+        const montoFormat = formatearMonto(montoNuevo);
+        localStorage.setItem(storageKey, montoFormat);
+
+        if (montoNuevo > montoAnterior && montoAnterior > 0) {
+            const alertaKey = 'alquiler_alerta_' + selectedAlqInmueble.key;
+            const alerta = {
+                anterior: montoAnteriorStr,
+                nuevo: montoFormat,
+                inmLabel: selectedAlqInmueble.label,
+                fecha: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })
+            };
+            localStorage.setItem(alertaKey, JSON.stringify(alerta));
+        }
+
+        mostrarToast(successMsgAlquiler);
     });
 
+    // ============================================================
+    //  AUTOCOMPLETE — INMUEBLE EXPENSAS
+    // ============================================================
     crearAutocomplete({
         inputEl: expInmuebleInput,
         dropdownEl: expInmuebleDropdown,
         chevronEl: expInmuebleChevron,
-        searchable: false, // pocos items, no necesita filtro
+        searchable: false,
         getItems: () => {
             if (!selectedClienteKey) return [];
             return clientesData[selectedClienteKey].inmuebles.map(inm => ({ key: inm.key, label: inm.label, icon: 'fa-home' }));
@@ -216,17 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
         onSelect: (key, label) => {
             expInmuebleInput.value = label;
             selectedExpInmueble = { key, label };
-            // Cargar monto guardado para ese inmueble (ya guardado con formato es-AR)
             const monto = localStorage.getItem('expensas_' + key);
             montoExpensas.value = monto || '';
-            // Cargar archivo si ya fue subido previamente
-            const archivoGuardado = localStorage.getItem('expensas_archivo_' + key);
-            if (archivoGuardado) {
-                const datos = JSON.parse(archivoGuardado);
-                mostrarChipArchivo(datos.nombre);
-            } else {
-                limpiarArchivo();
-            }
         }
     });
 
@@ -238,8 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const storageKey = 'expensas_' + selectedExpInmueble.key;
         const montoAnteriorStr = localStorage.getItem(storageKey);
-
-        // Convertir el monto anterior guardado (formato "52.000,00") a número
         let montoAnterior = 0;
         if (montoAnteriorStr) {
             montoAnterior = parsearMonto(montoAnteriorStr);
@@ -248,7 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const montoFormat = formatearMonto(montoNuevo);
         localStorage.setItem(storageKey, montoFormat);
 
-        // Si el monto AUMENTÓ, guardar alerta para el cliente
         if (montoNuevo > montoAnterior && montoAnterior > 0) {
             const alertaKey = 'expensas_alerta_' + selectedExpInmueble.key;
             const alerta = {
@@ -264,6 +332,164 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================================
+    //  AUTOCOMPLETE — TIPO DE DOCUMENTO (para Adjuntos)
+    // ============================================================
+    const tipoDocumentoInput = document.getElementById('tipoDocumentoInput');
+    const tipoDocumentoDropdown = document.getElementById('tipoDocumentoDropdown');
+    const tipoDocumentoChevron = document.getElementById('tipoDocumentoChevron');
+
+    // ============================================================
+    //  AUTOCOMPLETE — INMUEBLE (para Adjuntos)
+    // ============================================================
+    const adjInmuebleInput = document.getElementById('adjInmuebleInput');
+    const adjInmuebleDropdown = document.getElementById('adjInmuebleDropdown');
+    const adjInmuebleChevron = document.getElementById('adjInmuebleChevron');
+
+    // ============================================================
+    //  ADJUNTOS - MANEJO DE MÚLTIPLES ARCHIVOS (inicialización)
+    // ============================================================
+    const adjUploadZone = document.getElementById('adjUploadZone');
+    const adjArchivoInput = document.getElementById('adjArchivoInput');
+    const adjUploadZoneContent = document.getElementById('adjUploadZoneContent');
+    const adjUploadFilesList = document.getElementById('adjUploadFilesList');
+    const btnGuardarAdjunto = document.getElementById('btnGuardarAdjunto');
+    const successMsgAdjuntos = document.getElementById('successMsgAdjuntos');
+
+    let archivosSeleccionados = []; // Array para almacenar archivos seleccionados
+
+    // Función para renderizar lista de archivos (definida antes de usarla)
+    function renderizarListaArchivos() {
+        if (archivosSeleccionados.length === 0) {
+            adjUploadZoneContent.style.display = 'flex';
+            adjUploadFilesList.style.display = 'none';
+            adjUploadZone.classList.remove('has-file');
+            return;
+        }
+
+        adjUploadZoneContent.style.display = 'none';
+        adjUploadFilesList.style.display = 'block';
+        adjUploadZone.classList.add('has-file');
+
+        adjUploadFilesList.innerHTML = archivosSeleccionados.map((file, idx) => `
+            <div class="upload-file-chip">
+                <i class="fas fa-file-alt chip-icon"></i>
+                <span class="chip-name">${file.name}</span>
+                <button class="chip-remove" onclick="eliminarArchivoAdjunto(${idx})" title="Quitar archivo" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    window.eliminarArchivoAdjunto = (idx) => {
+        archivosSeleccionados.splice(idx, 1);
+        adjArchivoInput.value = '';
+        renderizarListaArchivos();
+    };
+
+    // Autocomplete para tipo de documento
+    crearAutocomplete({
+        inputEl: tipoDocumentoInput,
+        dropdownEl: tipoDocumentoDropdown,
+        chevronEl: tipoDocumentoChevron,
+        searchable: false,
+        getItems: () => [
+            { key: 'alquiler', label: 'Alquiler', icon: 'fa-key' },
+            { key: 'expensas', label: 'Expensas', icon: 'fa-file-invoice-dollar' }
+        ],
+        onSelect: (key, label) => {
+            tipoDocumentoInput.value = label;
+            selectedAdjTipo = key;
+        }
+    });
+
+    // Autocomplete para inmueble
+    crearAutocomplete({
+        inputEl: adjInmuebleInput,
+        dropdownEl: adjInmuebleDropdown,
+        chevronEl: adjInmuebleChevron,
+        searchable: false,
+        getItems: () => {
+            if (!selectedClienteKey) return [];
+            return clientesData[selectedClienteKey].inmuebles.map(inm => ({ key: inm.key, label: inm.label, icon: 'fa-home' }));
+        },
+        onSelect: (key, label) => {
+            adjInmuebleInput.value = label;
+            selectedAdjInmueble = { key, label };
+            renderizarListaArchivos();
+        }
+    });
+
+    // Manejo de cambio en input de archivos
+    adjArchivoInput.addEventListener('change', (e) => {
+        archivosSeleccionados = Array.from(e.target.files);
+        renderizarListaArchivos();
+    });
+
+    // Drag & drop para adjuntos
+    adjUploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!adjUploadZone.classList.contains('has-file')) {
+            adjUploadZone.classList.add('drag-over');
+        }
+    });
+
+    adjUploadZone.addEventListener('dragleave', () => {
+        adjUploadZone.classList.remove('drag-over');
+    });
+
+    adjUploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        adjUploadZone.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files);
+        archivosSeleccionados = archivosSeleccionados.concat(files);
+        renderizarListaArchivos();
+    });
+
+    // Guardar adjuntos
+    btnGuardarAdjunto.addEventListener('click', () => {
+        if (!selectedClienteKey) { mostrarAlerta('Seleccioná un cliente primero.', 'warning'); return; }
+        if (!selectedAdjTipo) { mostrarAlerta('Seleccioná el tipo de documento.', 'warning'); return; }
+        if (!selectedAdjInmueble) { mostrarAlerta('Seleccioná un inmueble.', 'warning'); return; }
+        if (archivosSeleccionados.length === 0) { mostrarAlerta('Adjuntá al menos un archivo antes de guardar.', 'warning'); return; }
+
+        let archivosGuardados = 0;
+        const totalArchivos = archivosSeleccionados.length;
+
+        archivosSeleccionados.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const storageKey = selectedAdjTipo + '_archivo_' + selectedAdjInmueble.key + '_' + Date.now() + '_' + idx;
+                const datos = {
+                    nombre: file.name,
+                    tipo: file.type,
+                    base64: e.target.result,
+                    fecha: new Date().toLocaleString('es-AR')
+                };
+                localStorage.setItem(storageKey, JSON.stringify(datos));
+                archivosGuardados++;
+
+                // Mostrar toast solo cuando se guardaron todos los archivos
+                if (archivosGuardados === totalArchivos) {
+                    mostrarToast(successMsgAdjuntos);
+                    limpiarAdjuntos();
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    function limpiarAdjuntos() {
+        archivosSeleccionados = [];
+        adjArchivoInput.value = '';
+        tipoDocumentoInput.value = '';
+        adjInmuebleInput.value = '';
+        selectedAdjTipo = null;
+        selectedAdjInmueble = null;
+        renderizarListaArchivos();
+    }
+
+    // ============================================================
     //  MENSAJES
     // ============================================================
     const inmueblePreview = document.getElementById('inmueblePreview');
@@ -274,79 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const successMsgNotif = document.getElementById('successMsgNotif');
     const msgHistory = document.getElementById('msgHistory');
     const msgList = document.getElementById('msgList');
-
-    // ── UPLOAD DE ARCHIVO ──────────────────────────────────────────
-    const uploadZone = document.getElementById('uploadZone');
-    const archivoInput = document.getElementById('archivoInput');
-    const uploadZoneContent = document.getElementById('uploadZoneContent');
-    const uploadFileChip = document.getElementById('uploadFileChip');
-    const chipFileName = document.getElementById('chipFileName');
-    const btnRemoveFile = document.getElementById('btnRemoveFile');
     const msgArchivoGroup = document.getElementById('msgArchivoGroup');
-
-    function mostrarChipArchivo(nombre) {
-        chipFileName.textContent = nombre;
-        uploadZoneContent.style.display = 'none';
-        uploadFileChip.style.display = 'flex';
-        uploadZone.classList.add('has-file');
-    }
-
-    function limpiarArchivo() {
-        archivoInput.value = '';
-        chipFileName.textContent = '';
-        uploadFileChip.style.display = 'none';
-        uploadZoneContent.style.display = 'flex';
-        uploadZone.classList.remove('has-file', 'drag-over');
-    }
-
-    function guardarArchivoEnStorage(file) {
-        if (!selectedExpInmueble) {
-            mostrarAlerta('Seleccioná un inmueble en la sección de Expensas antes de adjuntar un archivo.', 'warning');
-            limpiarArchivo();
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const datos = {
-                nombre: file.name,
-                tipo: file.type,
-                base64: e.target.result
-            };
-            localStorage.setItem('expensas_archivo_' + selectedExpInmueble.key, JSON.stringify(datos));
-            mostrarChipArchivo(file.name);
-        };
-        reader.readAsDataURL(file);
-    }
-
-    archivoInput.addEventListener('change', () => {
-        if (archivoInput.files.length > 0) {
-            guardarArchivoEnStorage(archivoInput.files[0]);
-        }
-    });
-
-    btnRemoveFile.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (selectedExpInmueble) {
-            localStorage.removeItem('expensas_archivo_' + selectedExpInmueble.key);
-        }
-        limpiarArchivo();
-    });
-
-    // Drag & drop visual
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        if (!uploadZone.classList.contains('has-file')) {
-            uploadZone.classList.add('drag-over');
-        }
-    });
-    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('drag-over');
-        if (uploadZone.classList.contains('has-file')) return;
-        const file = e.dataTransfer?.files?.[0];
-        if (file) guardarArchivoEnStorage(file);
-    });
 
     btnEnviarMsg.addEventListener('click', () => {
         const texto = msgTexto.value.trim();
@@ -400,21 +554,37 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ============================================================
-    //  AL SELECCIONAR CLIENTE — desbloquea ambas cards
+    //  AL SELECCIONAR CLIENTE — desbloquea todas las cards
     // ============================================================
     function alSeleccionarCliente(key) {
         // Desbloquear cards
+        cardAlquiler.classList.remove('card-bloqueada');
         cardExpensas.classList.remove('card-bloqueada');
+        cardAdjuntos.classList.remove('card-bloqueada');
         cardMensajes.classList.remove('card-bloqueada');
 
         // Actualizar título con nombre del cliente
         const tituloSpan = document.getElementById('tituloClienteMensaje');
         if (tituloSpan) tituloSpan.textContent = clientesData[key].nombre;
 
+        // Reset alquiler
+        selectedAlqInmueble = null;
+        AlqInmuebleInput.value = '';
+        montoAlquiler.value = '';
+
         // Reset expensas
         selectedExpInmueble = null;
         expInmuebleInput.value = '';
         montoExpensas.value = '';
+
+        // Reset adjuntos
+        selectedAdjTipo = null;
+        selectedAdjInmueble = null;
+        tipoDocumentoInput.value = '';
+        adjInmuebleInput.value = '';
+        archivosSeleccionados = [];
+        adjArchivoInput.value = '';
+        renderizarListaArchivos();
 
         // Reset mensajes
         selectedMsgInmueble = null;
@@ -442,25 +612,35 @@ document.addEventListener('DOMContentLoaded', () => {
         msgTextGroup.style.display = 'flex';
         msgArchivoGroup.style.display = 'flex';
         btnEnviarMsg.style.display = 'flex';
-        limpiarArchivo();
         renderMsgHistory(key);
         msgHistory.style.display = 'block';
     }
 
     function resetTodo() {
+        cardAlquiler.classList.add('card-bloqueada');
         cardExpensas.classList.add('card-bloqueada');
+        cardAdjuntos.classList.add('card-bloqueada');
         cardMensajes.classList.add('card-bloqueada');
         const tituloSpan = document.getElementById('tituloClienteMensaje');
         if (tituloSpan) tituloSpan.textContent = '';
+        selectedAlqInmueble = null;
         selectedExpInmueble = null;
+        selectedAdjTipo = null;
+        selectedAdjInmueble = null;
         selectedMsgInmueble = null;
+        AlqInmuebleInput.value = '';
+        montoAlquiler.value = '';
         expInmuebleInput.value = '';
         montoExpensas.value = '';
+        tipoDocumentoInput.value = '';
+        adjInmuebleInput.value = '';
+        archivosSeleccionados = [];
+        adjArchivoInput.value = '';
+        renderizarListaArchivos();
         previewItems.innerHTML = '';
         inmueblePreview.classList.remove('visible');
         msgTextGroup.style.display = 'none';
         msgArchivoGroup.style.display = 'none';
-        limpiarArchivo();
         btnEnviarMsg.style.display = 'none';
         msgHistory.style.display = 'none';
     }
