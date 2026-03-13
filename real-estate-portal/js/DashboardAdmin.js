@@ -176,32 +176,70 @@ document.addEventListener('DOMContentLoaded', () => {
         return parseFloat(str.replace(/\./g, '').replace(',', '.'));
     }
 
-    // Formateo en tiempo real mientras el usuario escribe
+    // ── Validación robusta del campo Monto Expensas ─────────────────
+    // Teclas de control que siempre se permiten
+    const TECLAS_CONTROL = [
+        'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+        'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'
+    ];
+
+    // Bloquear teclas no permitidas (letras, negativos, símbolos)
+    montoExpensas.addEventListener('keydown', (e) => {
+        // Permitir combinaciones con Ctrl/Meta (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+Z, etc.)
+        if (e.ctrlKey || e.metaKey) return;
+
+        const isDigit = /^[0-9]$/.test(e.key);
+        const isComa = e.key === ',';
+        const hasComa = montoExpensas.value.includes(',');
+        const isSubtract = e.key === '-' || e.code === 'Minus' || e.code === 'NumpadSubtract';
+
+        // Bloquear guión/negativo explícitamente
+        if (isSubtract) { e.preventDefault(); return; }
+        // Bloquear doble coma
+        if (isComa && hasComa) { e.preventDefault(); return; }
+        // Bloquear cualquier otra cosa que no sea dígito, coma o tecla de control
+        if (!isDigit && !isComa && !TECLAS_CONTROL.includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    // Bloquear pegado (paste) de contenido con letras o negativos
+    montoExpensas.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const texto = (e.clipboardData || window.clipboardData).getData('text');
+        // Extraer solo dígitos y una coma del texto pegado
+        const soloValido = texto.replace(/[^0-9,]/g, '');
+        const parts = soloValido.split(',');
+        const intPart = parts[0] || '';
+        const decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
+        const insertado = decPart !== null ? intPart + ',' + decPart : intPart;
+        if (insertado) {
+            // Insertar en la posición del cursor
+            const pos = montoExpensas.selectionStart;
+            const fin = montoExpensas.selectionEnd;
+            const actual = montoExpensas.value;
+            montoExpensas.value = actual.slice(0, pos) + insertado + actual.slice(fin);
+            // Disparar input para que el formateador actúe
+            montoExpensas.dispatchEvent(new Event('input'));
+        }
+    });
+
+    // Formateo en tiempo real: solo dígitos y coma, con separadores de miles
     montoExpensas.addEventListener('input', () => {
         const raw = montoExpensas.value;
-        // Extraer solo dígitos y una coma (parte decimal)
+        // Sanitizar: quitar todo excepto dígitos y coma
         const onlyDigits = raw.replace(/[^0-9,]/g, '');
         const parts = onlyDigits.split(',');
         const intPart = parts[0].replace(/^0+(?=\d)/, '') || '0';
         const decPart = parts.length > 1 ? parts[1].slice(0, 2) : null;
 
-        // Formatear parte entera con puntos de miles
+        // Formatear parte entera con puntos de miles (es-AR)
         const intFormatted = Number(intPart).toLocaleString('es-AR');
 
         // Reconstruir valor
         montoExpensas.value = decPart !== null
             ? intFormatted + ',' + decPart
             : intFormatted === '0' ? '' : intFormatted;
-    });
-
-    // Bloquear teclas no permitidas
-    montoExpensas.addEventListener('keydown', (e) => {
-        const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'];
-        const isDigit = /^[0-9]$/.test(e.key);
-        const isComa = e.key === ',';
-        const hasComa = montoExpensas.value.includes(',');
-        if (!isDigit && !isComa && !allowed.includes(e.key)) e.preventDefault();
-        if (isComa && hasComa) e.preventDefault();
     });
 
     crearAutocomplete({

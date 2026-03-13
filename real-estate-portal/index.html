@@ -93,18 +93,22 @@
                                 <option value="USD">USD</option>
                                 <option value="ARS">ARS</option>
                             </select>
-                            <input type="number" placeholder="Desde" aria-label="Minimum price">
+                            <input type="number" id="precioDesde" placeholder="Desde" aria-label="Minimum price"
+                                min="0">
                             <span class="separator">-</span>
-                            <input type="number" placeholder="Hasta" aria-label="Maximum price">
+                            <input type="number" id="precioHasta" placeholder="Hasta" aria-label="Maximum price"
+                                min="0">
                         </div>
                     </div>
 
                     <div class="filter-group">
                         <label>Superficie</label>
                         <div class="price-inputs">
-                            <input type="number" placeholder="Desde" aria-label="Minimum surface">
+                            <input type="number" id="superficieDesde" placeholder="Desde" aria-label="Minimum surface"
+                                min="0">
                             <span class="separator">-</span>
-                            <input type="number" placeholder="Hasta" aria-label="Maximum surface">
+                            <input type="number" id="superficieHasta" placeholder="Hasta" aria-label="Maximum surface"
+                                min="0">
                         </div>
                     </div>
 
@@ -330,8 +334,66 @@
     </footer>
 
     <script>
+        // ── Navbar mobile toggle ──
         document.querySelector('.mobile-toggle').addEventListener('click', function () {
             document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // ── Validación de campos numéricos (sin letras, sin negativos) ──
+        const TECLAS_CONTROL = [
+            'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+            'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End', 'F5'
+        ];
+
+        function validarCampoNumerico(input) {
+            // Bloquear teclas inválidas
+            input.addEventListener('keydown', (e) => {
+                // Permitir Ctrl/Meta (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+Z...)
+                if (e.ctrlKey || e.metaKey) return;
+
+                const isDigit = /^[0-9]$/.test(e.key);
+                const isNegative = e.key === '-' || e.code === 'Minus' || e.code === 'NumpadSubtract';
+                const isPunto = e.key === '.';
+                const yaTienePunto = input.value.includes('.');
+
+                // Bloquear negativo explícitamente
+                if (isNegative) { e.preventDefault(); return; }
+                // Evitar doble punto decimal
+                if (isPunto && yaTienePunto) { e.preventDefault(); return; }
+                // Bloquear cualquier cosa que no sea dígito, punto o tecla de control
+                if (!isDigit && !isPunto && !TECLAS_CONTROL.includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Bloquear pegado con letras o negativos
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const texto = (e.clipboardData || window.clipboardData).getData('text');
+                // Solo dígitos y un punto decimal
+                const soloNumero = texto.replace(/[^0-9.]/g, '');
+                const partes = soloNumero.split('.');
+                const limpio = partes[0] + (partes.length > 1 ? '.' + partes[1] : '');
+                if (limpio) {
+                    const pos = input.selectionStart;
+                    const fin = input.selectionEnd;
+                    const actual = input.value;
+                    input.value = actual.slice(0, pos) + limpio + actual.slice(fin);
+                    input.dispatchEvent(new Event('input'));
+                }
+            });
+
+            // Sanitizar si queda algún valor negativo (por ejemplo, de flechas del spinner)
+            input.addEventListener('input', () => {
+                const val = parseFloat(input.value);
+                if (!isNaN(val) && val < 0) input.value = '';
+            });
+        }
+
+        // Aplicar a todos los campos numéricos del filtro
+        ['precioDesde', 'precioHasta', 'superficieDesde', 'superficieHasta'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) validarCampoNumerico(el);
         });
     </script>
 </body>
