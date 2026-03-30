@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Modern Real Estate Portal - Find your dream home, apartment or commercial property.">
+    <title>MI Servicio Inmobiliario - Propiedades en Alquiler</title>
+    <link rel="icon" href="LogoInmob.png" type="image/png">
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="LogoInmob.png" alt="Logo" class="logoimg">
+                MI <span>Servicio Inmobiliario</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="ventas.html">Venta</a>
+                <a href="alquileres.html" class="active">Alquiler</a>
+                <a href="login.html">Autogestión</a>
+            </nav>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 40px;">
+
+        <!-- Advanced Filters Section (Standalone) -->
+        <div class="advanced-filters"
+            style="transform: none; margin-bottom: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+            <form class="filter-form">
+                <div class="filter-group">
+                    <label>Operación</label>
+                    <select class="custom-select">
+                        <option value="sale">Venta</option>
+                        <option value="rent">Alquiler</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Tipo</label>
+                    <select class="custom-select">
+                        <option value="">Todos</option>
+                        <option value="apartment">Departamento</option>
+                        <option value="house">Casa</option>
+                        <option value="commercial">Comercial</option>
+                        <option value="office">Oficina</option>
+                        <option value="land">Terreno</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Ciudad</label>
+                    <select class="custom-select">
+                        <option value="">Todas</option>
+                        <option value="cordoba">Córdoba</option>
+                        <option value="carlos_paz">Carlos Paz</option>
+                        <option value="villa_maria">Villa María</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Barrio</label>
+                    <select class="custom-select">
+                        <option value="">Todos</option>
+                        <option value="centro">Centro</option>
+                        <option value="nueva_cordoba">Nueva Córdoba</option>
+                        <option value="alberdi">Alberdi</option>
+                    </select>
+                </div>
+
+                <div class="filter-group price-group">
+                    <label>Presupuesto</label>
+                    <div class="price-inputs">
+                        <select class="custom-select currency-select" aria-label="Currency">
+                            <option value="USD">USD</option>
+                            <option value="ARS">ARS</option>
+                        </select>
+                        <input type="number" placeholder="Desde" aria-label="Minimum price">
+                        <span class="separator">-</span>
+                        <input type="number" placeholder="Hasta" aria-label="Maximum price">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Superficie</label>
+                    <div class="price-inputs">
+                        <input type="number" placeholder="Desde" aria-label="Minimum surface">
+                        <span class="separator">-</span>
+                        <input type="number" placeholder="Hasta" aria-label="Maximum surface">
+                    </div>
+                </div>
+
+                <div class="filter-submit">
+                    <button type="button" class="btn btn-primary btn-search">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Property Listing Grid -->
+        <section class="property-section" style="margin-top: 0; padding-top: 0;">
+            <div class="section-header">
+                <h2>Propiedades en Alquiler</h2>
+                <div class="sort-by">
+                    <span style="color: var(--text-muted); margin-right: 8px; font-weight: 500;">Ordenar por:</span>
+                    <select class="custom-select" style="width: 200px; display: inline-block;">
+                        <option value="recent">Más recientes</option>
+                        <option value="price-asc">Precio: Menor a Mayor</option>
+                        <option value="price-desc">Precio: Mayor a Menor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="property-grid">
+                <!-- Property Card 2 (Departamento Premium - Alquiler) -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800"
+                            alt="Departamento de Lujo">
+                        <div class="badges">
+                            <span class="badge operation rent">Alquiler</span>
+                        </div>
+                        <div class="price">ARS 850,000<span>/mes</span></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Departamento</span>
+                        <h3 class="property-title">Departamento Premium en Altura</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Córdoba, Nueva Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 2 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 110 m²</span>
+                        </div>
+                        <p class="property-desc">Impresionante departamento contemporáneo con vistas a la ciudad,
+                            amenities exclusivos y guardia de seguridad 24/7 en pleno corazón de Nueva Córdoba.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+
+                <!-- Property Card 6 (Dúplex Amoblado - Alquiler) -->
+                <article class="property-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800"
+                            alt="Departamento Amoblado">
+                        <div class="badges">
+                            <span class="badge operation rent">Alquiler</span>
+                        </div>
+                        <div class="price">ARS 450,000<span>/mes</span></div>
+                    </div>
+                    <div class="card-content">
+                        <span class="property-type">Departamento</span>
+                        <h3 class="property-title">Dúplex Amoblado con Terraza</h3>
+                        <p class="property-location"><i class="fas fa-map-marker-alt"></i> Barrio Güemes, Córdoba</p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i> 2 Dormitorios</span>
+                            <span><i class="fas fa-bath"></i> 2 Baños</span>
+                            <span><i class="fas fa-vector-square"></i> 85 m²</span>
+                        </div>
+                        <p class="property-desc">Espectacular dúplex totalmente equipado en el polo gastronómico y
+                            cultural de la ciudad. Cuenta con terraza propia y parrilla.</p>
+                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                    </div>
+                </article>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+                <button class="btn btn-secondary" style="padding: 14px 32px;">Cargar más propiedades <i
+                        class="fas fa-spinner" style="margin-left: 8px;"></i></button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">MI <span>Servicio Inmobiliario</span></a>
+                <p>Tu propiedad en las mejores manos.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="ventas.html">Propiedades en Venta</a></li>
+                    <li><a href="alquileres.html">Propiedades en Alquiler</a></li>
+                    <li><a href="#">Agencias</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Tipos de Propiedad</h3>
+                <ul>
+                    <li><a href="#">Departamentos</a></li>
+                    <li><a href="#">Casas y Chalets</a></li>
+                    <li><a href="#">Comerciales</a></li>
+                    <li><a href="#">Oficinas</a></li>
+                    <li><a href="#">Terrenos</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Principal 123, Córdoba, Argentina</li>
+                    <li><i class="fas fa-phone-alt"></i> +54 9 351 123 4567</li>
+                    <li><i class="fas fa-envelope"></i> info@miservicioinmobiliario.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2024 MI Servicio Inmobiliario. Todos los derechos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.mobile-toggle').addEventListener('click', function () {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>
