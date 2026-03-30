@@ -44,13 +44,6 @@
         <div class="advanced-filters"
             style="transform: none; margin-bottom: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
             <form class="filter-form">
-                <div class="filter-group">
-                    <label>Operación</label>
-                    <select class="custom-select">
-                        <option value="sale">Venta</option>
-                        <option value="rent">Alquiler</option>
-                    </select>
-                </div>
 
                 <div class="filter-group">
                     <label>Tipo</label>
@@ -120,7 +113,7 @@
                 <h2>Propiedades en Alquiler</h2>
                 <div class="sort-by">
                     <span style="color: var(--text-muted); margin-right: 8px; font-weight: 500;">Ordenar por:</span>
-                    <select class="custom-select" style="width: 200px; display: inline-block;">
+                    <select id="sort-select" class="custom-select" style="width: 200px; display: inline-block;">
                         <option value="recent">Más recientes</option>
                         <option value="price-asc">Precio: Menor a Mayor</option>
                         <option value="price-desc">Precio: Mayor a Menor</option>
@@ -130,7 +123,7 @@
 
             <div class="property-grid">
                 <!-- Property Card 2 (Departamento Premium - Alquiler) -->
-                <article class="property-card">
+                <article class="property-card" data-price="850000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800"
                             alt="Departamento de Lujo">
@@ -150,12 +143,12 @@
                         </div>
                         <p class="property-desc">Impresionante departamento contemporáneo con vistas a la ciudad,
                             amenities exclusivos y guardia de seguridad 24/7 en pleno corazón de Nueva Córdoba.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=6" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 6 (Dúplex Amoblado - Alquiler) -->
-                <article class="property-card">
+                <article class="property-card" data-price="450000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800"
                             alt="Departamento Amoblado">
@@ -175,7 +168,7 @@
                         </div>
                         <p class="property-desc">Espectacular dúplex totalmente equipado en el polo gastronómico y
                             cultural de la ciudad. Cuenta con terraza propia y parrilla.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=7" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
             </div>
@@ -245,6 +238,39 @@
     <script>
         document.querySelector('.mobile-toggle').addEventListener('click', function () {
             document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // Funcionalidad de ordenamiento
+        const sortSelect = document.getElementById('sort-select');
+        const propertyGrid = document.querySelector('.property-grid');
+        const propertyCards = Array.from(document.querySelectorAll('.property-card'));
+
+        sortSelect.addEventListener('change', function() {
+            let sortedCards = [...propertyCards];
+            const sortValue = this.value;
+
+            if (sortValue === 'price-asc') {
+                // Ordenar de menor a mayor
+                sortedCards.sort((a, b) => {
+                    const priceA = parseInt(a.getAttribute('data-price'));
+                    const priceB = parseInt(b.getAttribute('data-price'));
+                    return priceA - priceB;
+                });
+            } else if (sortValue === 'price-desc') {
+                // Ordenar de mayor a menor
+                sortedCards.sort((a, b) => {
+                    const priceA = parseInt(a.getAttribute('data-price'));
+                    const priceB = parseInt(b.getAttribute('data-price'));
+                    return priceB - priceA;
+                });
+            }
+            // Si es 'recent', mantenemos el orden original
+
+            // Limpiar la grilla y agregar las tarjetas ordenadas
+            propertyGrid.innerHTML = '';
+            sortedCards.forEach(card => {
+                propertyGrid.appendChild(card);
+            });
         });
     </script>
 </body>

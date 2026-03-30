@@ -44,17 +44,10 @@
         <div class="advanced-filters"
             style="transform: none; margin-bottom: 40px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
             <form class="filter-form">
-                <div class="filter-group">
-                    <label>Operación</label>
-                    <select class="custom-select">
-                        <option value="sale">Venta</option>
-                        <option value="rent">Alquiler</option>
-                    </select>
-                </div>
 
                 <div class="filter-group">
                     <label>Tipo</label>
-                    <select class="custom-select">
+                    <select class="custom-select">  
                         <option value="">Todos</option>
                         <option value="apartment">Departamento</option>
                         <option value="house">Casa</option>
@@ -120,7 +113,7 @@
                 <h2>Propiedades en Venta</h2>
                 <div class="sort-by">
                     <span style="color: var(--text-muted); margin-right: 8px; font-weight: 500;">Ordenar por:</span>
-                    <select class="custom-select" style="width: 200px; display: inline-block;">
+                    <select id="sort-select" class="custom-select" style="width: 200px; display: inline-block;">
                         <option value="recent">Más recientes</option>
                         <option value="price-asc">Precio: Menor a Mayor</option>
                         <option value="price-desc">Precio: Mayor a Menor</option>
@@ -129,7 +122,7 @@
             </div>
 
             <div class="property-grid">
-                <article class="property-card featured">
+                <article class="property-card featured" data-price="280000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800"
                             alt="Casa Moderna">
@@ -152,12 +145,12 @@
                         <p class="property-desc">Espectacular casa moderna ubicada en una zona residencial exclusiva.
                             Cuenta con ambientes luminosos, amplio jardín, quincho cerrado y terminaciones de primera
                             calidad.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=1" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 3 (Comercial - Venta) -->
-                <article class="property-card">
+                <article class="property-card" data-price="1200000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800"
                             alt="Espacio Comercial">
@@ -177,12 +170,12 @@
                         </div>
                         <p class="property-desc">Propiedad comercial en ubicación privilegiada, ideal para sede
                             corporativa o locales comerciales boutique con alto tránsito peatonal.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=2" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 4 (Casa Familiar - Venta) -->
-                <article class="property-card featured">
+                <article class="property-card featured" data-price="180000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=800"
                             alt="Casa Familiar">
@@ -203,12 +196,12 @@
                         </div>
                         <p class="property-desc">Acogedora casa de estilo colonial renovada, con amplio patio trasero,
                             galería con asador y cochera doble. Entorno tranquilo y seguro.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=3" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 5 (Departamento - Venta) -->
-                <article class="property-card">
+                <article class="property-card" data-price="95000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1502672260266-1c1de24244e4?auto=format&fit=crop&q=80&w=800"
                             alt="Departamento Moderno">
@@ -228,12 +221,12 @@
                         </div>
                         <p class="property-desc">Excelente oportunidad de inversión. Departamento moderno con balcón al
                             frente, cocina integrada con barra y detalles de categoría.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=4" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 7 (Terreno - Venta) -->
-                <article class="property-card">
+                <article class="property-card" data-price="45000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
                             alt="Terreno en Venta">
@@ -252,12 +245,12 @@
                         </div>
                         <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
                             zona tranquila y de rápido crecimiento.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=5" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 8 (Terreno - Venta) -->
-                <article class="property-card">
+                <article class="property-card" data-price="45000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
                             alt="Terreno en Venta">
@@ -276,12 +269,12 @@
                         </div>
                         <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
                             zona tranquila y de rápido crecimiento.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=5" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
 
                 <!-- Property Card 9 (Terreno - Venta) -->
-                <article class="property-card">
+                <article class="property-card" data-price="45000">
                     <div class="card-image">
                         <img src="https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=800"
                             alt="Terreno en Venta">
@@ -300,7 +293,7 @@
                         </div>
                         <p class="property-desc">Excepcional terreno listo para desarrollo residencial, ubicado en una
                             zona tranquila y de rápido crecimiento.</p>
-                        <a href="#" class="btn btn-primary btn-block">Ver Detalles</a>
+                        <a href="property-detail.html?id=5" class="btn btn-primary btn-block">Ver Detalles</a>
                     </div>
                 </article>
             </div>
@@ -370,6 +363,39 @@
     <script>
         document.querySelector('.mobile-toggle').addEventListener('click', function () {
             document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // Funcionalidad de ordenamiento
+        const sortSelect = document.getElementById('sort-select');
+        const propertyGrid = document.querySelector('.property-grid');
+        const propertyCards = Array.from(document.querySelectorAll('.property-card'));
+
+        sortSelect.addEventListener('change', function() {
+            let sortedCards = [...propertyCards];
+            const sortValue = this.value;
+
+            if (sortValue === 'price-asc') {
+                // Ordenar de menor a mayor
+                sortedCards.sort((a, b) => {
+                    const priceA = parseInt(a.getAttribute('data-price'));
+                    const priceB = parseInt(b.getAttribute('data-price'));
+                    return priceA - priceB;
+                });
+            } else if (sortValue === 'price-desc') {
+                // Ordenar de mayor a menor
+                sortedCards.sort((a, b) => {
+                    const priceA = parseInt(a.getAttribute('data-price'));
+                    const priceB = parseInt(b.getAttribute('data-price'));
+                    return priceB - priceA;
+                });
+            }
+            // Si es 'recent', mantenemos el orden original
+
+            // Limpiar la grilla y agregar las tarjetas ordenadas
+            propertyGrid.innerHTML = '';
+            sortedCards.forEach(card => {
+                propertyGrid.appendChild(card);
+            });
         });
     </script>
 </body>

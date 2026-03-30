@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Detalles de la propiedad - MI Servicio Inmobiliario">
+    <title id="page-title">Detalles de la Propiedad - MI Servicio Inmobiliario</title>
+    <link rel="icon" href="LogoInmob.png" type="image/png">
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .property-detail {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin: 40px 0 80px 0;
+        }
+
+        .detail-image-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            background: var(--bg-gray);
+        }
+
+        .detail-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-badges {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+
+        .detail-price {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 700;
+            font-size: 1.75rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+        }
+
+        .detail-price span {
+            font-size: 1rem;
+            font-weight: 500;
+            display: block;
+        }
+
+        .detail-content {
+            padding: 40px;
+        }
+
+        .detail-header {
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 24px;
+        }
+
+        .property-type-detail {
+            font-size: 0.875rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .detail-header h1 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .property-location-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .detail-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .feature-content h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .feature-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .description-section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .description-text {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+        }
+
+        .amenities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .amenity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius-md);
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .amenity i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .contact-section {
+            background: var(--primary-light);
+            padding: 32px;
+            border-radius: var(--border-radius-lg);
+            margin-top: 48px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .contact-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            font-size: 1.25rem;
+            min-width: 24px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            flex-direction: column;
+        }
+
+        .btn-large {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            height: auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 24px;
+            transition: gap var(--transition-fast);
+        }
+
+        .back-link:hover {
+            gap: 12px;
+        }
+
+        .back-link i {
+            font-size: 1.2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .detail-image-container {
+                height: 300px;
+            }
+
+            .detail-content {
+                padding: 24px;
+            }
+
+            .detail-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-price {
+                top: 16px;
+                right: 16px;
+                padding: 12px 16px;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="LogoInmob.png" alt="Logo" class="logoimg">
+                MI <span>Servicio Inmobiliario</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="ventas.html">Venta</a>
+                <a href="alquileres.html">Alquiler</a>
+                <a href="login.html">Autogestión</a>
+            </nav>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <a href="javascript:history.back()" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Volver
+        </a>
+
+        <div class="property-detail">
+            <!-- Main Image Section -->
+            <div class="detail-image-container">
+                <img id="detail-image" src="" alt="Property Detail Image">
+                <div class="detail-badges" id="detail-badges"></div>
+                <div class="detail-price" id="detail-price"></div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="detail-content">
+                <!-- Header Info -->
+                <div class="detail-header">
+                    <span class="property-type-detail" id="detail-type"></span>
+                    <h1 id="detail-title"></h1>
+                    <p class="property-location-detail" id="detail-location"></p>
+                </div>
+
+                <!-- Key Features -->
+                <div class="detail-grid" id="detail-features"></div>
+
+                <!-- Description -->
+                <div class="description-section">
+                    <h2 class="section-title">Descripción</h2>
+                    <p class="description-text" id="detail-description"></p>
+                </div>
+
+                <!-- Amenities -->
+                <div class="description-section">
+                    <h2 class="section-title">Características Principales</h2>
+                    <div class="amenities" id="detail-amenities"></div>
+                </div>
+
+                <!-- Contact Section -->
+                <div class="contact-section">
+                    <div class="contact-grid">
+                        <div class="contact-info">
+                            <h3>Interesado en esta propiedad?</h3>
+                            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                                Contáctanos ahora para obtener más información o para agendar una visita. Nuestro equipo 
+                                está disponible para ayudarte.
+                            </p>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <span>+54 9 351 123 4567</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>info@miservicioinmobiliario.com</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Av. Principal 123, Córdoba</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-large">
+                                <i class="fas fa-phone"></i> Llamar Ahora
+                            </button>
+                            <button class="btn btn-primary btn-large">
+                                <i class="fas fa-envelope"></i> Enviar Mensaje
+                            </button>
+                            <button class="btn btn-secondary btn-large">
+                                <i class="fas fa-calendar"></i> Agendar Visita
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">MI <span>Servicio Inmobiliario</span></a>
+                <p>Tu propiedad en las mejores manos.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="ventas.html">Propiedades en Venta</a></li>
+                    <li><a href="alquileres.html">Propiedades en Alquiler</a></li>
+                    <li><a href="#">Agencias</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h3>Tipos de Propiedad</h3>
+                <ul>
+                    <li><a href="#">Departamentos</a></li>
+                    <li><a href="#">Casas y Chalets</a></li>
+                    <li><a href="#">Comerciales</a></li>
+                    <li><a href="#">Oficinas</a></li>
+                    <li><a href="#">Terrenos</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Principal 123, Córdoba, Argentina</li>
+                    <li><i class="fas fa-phone-alt"></i> +54 9 351 123 4567</li>
+                    <li><i class="fas fa-envelope"></i> info@miservicioinmobiliario.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2024 MI Servicio Inmobiliario. Todos los derechos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.mobile-toggle').addEventListener('click', function () {
+            document.getElementById('nav-links').classList.toggle('active');
+        });
+
+        // Base de datos de propiedades
+        const properties = {
+            1: {
+                title: "Chalet Moderno con Piscina",
+                type: "Casa",
+                price: "USD 280,000",
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200",
+                location: "Cerro de las Rosas, Córdoba, Argentina",
+                operation: "Venta",
+                featured: true,
+                bedrooms: 3,
+                bathrooms: 2,
+                surface: 250,
+                description: "Espectacular casa moderna ubicada en una zona residencial exclusiva. Cuenta con ambientes luminosos, amplio jardín, quincho cerrado y terminaciones de primera calidad. Esta propiedad representa el máximo en comodidad y lujo, ideal para familias que buscan vivir en un entorno de tranquilidad y seguridad.\n\nLa casa ha sido completamente renovada con materiales de calidad premium. Cuenta con sistema de climatización central, piscina temperada, área de entretenimiento con parrilla, y un amplio garaje para 2 vehículos. Ubicada en una cuadra cerrada con seguridad privada 24/7.",
+                amenities: [
+                    { icon: "fas fa-water", name: "Piscina" },
+                    { icon: "fas fa-tree", name: "Jardín Amplio" },
+                    { icon: "fas fa-snowflake", name: "Aire Acondicionado" },
+                    { icon: "fas fa-fire", name: "Calefacción Central" },
+                    { icon: "fas fa-car", name: "Cochera Doble" },
+                    { icon: "fas fa-shield-alt", name: "Seguridad 24/7" },
+                    { icon: "fas fa-utensils", name: "Quincho" },
+                    { icon: "fas fa-sun", name: "Terraza Amplia" }
+                ]
+            },
+            2: {
+                title: "Edificio de Oficinas Céntrico",
+                type: "Comercial",
+                price: "USD 1,200,000",
+                image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200",
+                location: "Córdoba, Centro",
+                operation: "Venta",
+                featured: false,
+                floors: 3,
+                parking: 10,
+                surface: 800,
+                description: "Propiedad comercial en ubicación privilegiada, ideal para sede corporativa o locales comerciales boutique con alto tránsito peatonal. Este edificio de oficinas ofrece una inversión excepcional en el corazón del centro de Córdoba.\n\nCuenta con 3 pisos completos, 10 cocheras, servicios de primera calidad, ascensor, y ambientes versátiles para adaptar a diferentes tipos de negocios. La ubicación céntrica garantiza excelente flujo de clientes y visibilidad.",
+                amenities: [
+                    { icon: "fas fa-elevator", name: "Ascensor" },
+                    { icon: "fas fa-car", name: "10 Cocheras" },
+                    { icon: "fas fa-wifi", name: "Internet de Alta Velocidad" },
+                    { icon: "fas fa-shield-alt", name: "Seguridad 24/7" },
+                    { icon: "fas fa-parking", name: "Estacionamiento" },
+                    { icon: "fas fa-building", name: "3 Pisos" }
+                ]
+            },
+            3: {
+                title: "Hermosa Casa Familiar con Jardín",
+                type: "Casa",
+                price: "USD 180,000",
+                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=1200",
+                location: "Barrio Jardín, Córdoba",
+                operation: "Venta",
+                featured: true,
+                bedrooms: 3,
+                bathrooms: 2,
+                surface: 180,
+                description: "Acogedora casa de estilo colonial renovada, con amplio patio trasero, galería con asador y cochera doble. Entorno tranquilo y seguro, ideal para una familia. Esta propiedad combina el encanto clásico con todas las comodidades modernas.\n\nLa casa ha sido completamente reformada con especial cuidado en los detalles. Posee jardín amplio, sistema eléctrico y de agua modernizado, y una distribución funcional que maximiza los espacios.",
+                amenities: [
+                    { icon: "fas fa-tree", name: "Jardín Amplio" },
+                    { icon: "fas fa-utensils", name: "Quincho" },
+                    { icon: "fas fa-car", name: "Cochera Doble" },
+                    { icon: "fas fa-fire", name: "Calefacción" },
+                    { icon: "fas fa-shield-alt", name: "Seguridad" },
+                    { icon: "fas fa-home", name: "Estilo Colonial" }
+                ]
+            },
+            4: {
+                title: "Departamento Luminoso a Estrenar",
+                type: "Departamento",
+                price: "USD 95,000",
+                image: "https://images.unsplash.com/photo-1502672260266-1c1de24244e4?auto=format&fit=crop&q=80&w=1200",
+                location: "General Paz, Córdoba",
+                operation: "Venta",
+                featured: false,
+                bedrooms: 1,
+                bathrooms: 1,
+                surface: 55,
+                description: "Excelente oportunidad de inversión. Departamento moderno con balcón al frente, cocina integrada con barra y detalles de categoría. Ubicado en una zona residencial con muy buena accesibilidad y servicios cercanos.\n\nEl departamento es a estrenar, completamente equipado y listo para habitar. Ideal para invertir o para jóvenes profesionales buscando su primer hogar en una zona céntrica.",
+                amenities: [
+                    { icon: "fas fa-snowflake", name: "Aire Acondicionado" },
+                    { icon: "fas fa-sun", name: "Balcón" },
+                    { icon: "fas fa-utensils", name: "Cocina Integrada" },
+                    { icon: "fas fa-shield-alt", name: "Seguridad" },
+                    { icon: "fas fa-parking", name: "Cochera" }
+                ]
+            },
+            5: {
+                title: "Lote Premium para Desarrollo",
+                type: "Terreno",
+                price: "USD 45,000",
+                image: "https://images.unsplash.com/photo-1502672260266-1c1c2b1ea18c?auto=format&fit=crop&q=80&w=1200",
+                location: "Carlos Paz, Periferia",
+                operation: "Venta",
+                featured: false,
+                surface: 1500,
+                description: "Excepcional terreno listo para desarrollo residencial, ubicado en una zona tranquila y de rápido crecimiento. Este lote ofrece excelentes oportunidades de inversión en un área en expansión.\n\nEl terreno cuenta con servicios listos (agua, luz, gas), acceso fácil, y está estratégicamente ubicado en una zona de alto potencial de valorización.",
+                amenities: [
+                    { icon: "fas fa-water", name: "Servicios Listos" },
+                    { icon: "fas fa-road", name: "Acceso Directo" },
+                    { icon: "fas fa-tree", name: "Zona Tranquila" },
+                    { icon: "fas fa-chart-line", name: "Alto Potencial" }
+                ]
+            },
+            6: {
+                title: "Departamento Premium en Altura",
+                type: "Departamento",
+                price: "ARS 850,000/mes",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200",
+                location: "Córdoba, Nueva Córdoba",
+                operation: "Alquiler",
+                featured: false,
+                bedrooms: 2,
+                bathrooms: 2,
+                surface: 110,
+                description: "Impresionante departamento contemporáneo con vistas a la ciudad, amenities exclusivos y guardia de seguridad 24/7 en pleno corazón de Nueva Córdoba. Este es un departamento de lujo completamente equipado.\n\nCuenta con espacios amplios, iluminación natural, acabados premium, y está ubicado en un edificio de primer nivel con todas las comodidades que requiere.",
+                amenities: [
+                    { icon: "fas fa-eye", name: "Vistas a la Ciudad" },
+                    { icon: "fas fa-snowflake", name: "Aire Acondicionado" },
+                    { icon: "fas fa-shield-alt", name: "Seguridad 24/7" },
+                    { icon: "fas fa-sun", name: "Termopanel" },
+                    { icon: "fas fa-parking", name: "Cochera Cubierta" },
+                    { icon: "fas fa-dumbbell", name: "Gimnasio" }
+                ]
+            },
+            7: {
+                title: "Dúplex Amoblado con Terraza",
+                type: "Departamento",
+                price: "ARS 450,000/mes",
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=1200",
+                location: "Barrio Güemes, Córdoba",
+                operation: "Alquiler",
+                featured: false,
+                bedrooms: 2,
+                bathrooms: 2,
+                surface: 85,
+                description: "Espectacular dúplex totalmente equipado en el polo gastronómico y cultural de la ciudad. Cuenta con terraza propia y parrilla. Este es el lugar perfecto para disfrutar de la vida en Córdoba.\n\nCompletamente amoblado y listo para mudarse. Ubicado en una zona vibrante con bares, restaurantes y vida cultural a pocos metros.",
+                amenities: [
+                    { icon: "fas fa-sun", name: "Terraza con Parrilla" },
+                    { icon: "fas fa-couch", name: "Totalmente Amoblado" },
+                    { icon: "fas fa-utensils", name: "Cocina Completa" },
+                    { icon: "fas fa-wifi", name: "Internet" },
+                    { icon: "fas fa-parking", name: "Estacionamiento" }
+                ]
+            }
+        };
+
+        // Función para cargar los detalles de la propiedad
+        function loadProperty() {
+            const params = new URLSearchParams(window.location.search);
+            const propertyId = params.get('id') || 1;
+            const property = properties[propertyId];
+
+            if (!property) {
+                document.body.innerHTML = '<main class="container" style="margin-top: 100px; text-align: center;"><p>Propiedad no encontrada</p><a href="index.html" style="color: var(--primary);">Volver al inicio</a></main>';
+                return;
+            }
+
+            // Actualizar título de la página
+            document.getElementById('page-title').textContent = property.title + " - MI Servicio Inmobiliario";
+
+            // Actualizar imagen
+            document.getElementById('detail-image').src = property.image;
+
+            // Actualizar badges
+            let badgesHTML = `<span class="badge operation">${property.operation}</span>`;
+            if (property.featured) {
+                badgesHTML += `<span class="badge featured-badge"><i class="fas fa-star"></i> Destacada</span>`;
+            }
+            document.getElementById('detail-badges').innerHTML = badgesHTML;
+
+            // Actualizar precio
+            document.getElementById('detail-price').innerHTML = `${property.price}<span>Precio</span>`;
+
+            // Actualizar tipo y título
+            document.getElementById('detail-type').textContent = property.type;
+            document.getElementById('detail-title').textContent = property.title;
+            document.getElementById('detail-location').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${property.location}`;
+
+            // Actualizar características
+            let featuresHTML = '';
+            const features = [
+                { icon: 'fas fa-bed', label: 'Dormitorios', value: property.bedrooms },
+                { icon: 'fas fa-bath', label: 'Baños', value: property.bathrooms },
+                { icon: 'fas fa-building', label: 'Pisos', value: property.floors },
+                { icon: 'fas fa-car', label: 'Cocheras', value: property.parking },
+                { icon: 'fas fa-vector-square', label: 'Superficie', value: property.surface + ' m²' },
+                { icon: 'fas fa-home', label: 'Tipo de Propiedad', value: property.type }
+            ];
+
+            features.forEach(feature => {
+                if (feature.value !== undefined) {
+                    const displayValue = feature.label === 'Superficie' ? feature.value : (feature.value || '');
+                    featuresHTML += `
+                        <div class="detail-feature">
+                            <i class="feature-icon ${feature.icon}"></i>
+                            <div class="feature-content">
+                                <h3>${feature.label}</h3>
+                                <p>${displayValue}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            document.getElementById('detail-features').innerHTML = featuresHTML;
+
+            // Actualizar descripción
+            document.getElementById('detail-description').textContent = property.description;
+
+            // Actualizar amenities
+            let amenitiesHTML = '';
+            property.amenities.forEach(amenity => {
+                amenitiesHTML += `
+                    <div class="amenity">
+                        <i class="${amenity.icon}"></i>
+                        <span>${amenity.name}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('detail-amenities').innerHTML = amenitiesHTML;
+        }
+
+        // Cargar la propiedad cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', loadProperty);
+    </script>
+</body>
+
+</html>
