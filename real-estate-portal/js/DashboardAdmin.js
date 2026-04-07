@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardExpensas = document.getElementById('cardExpensas');
     const cardAdjuntos = document.getElementById('cardAdjuntos');
     const cardMensajes = document.getElementById('cardMensajes');
+    const cardServicios = document.getElementById('cardServicios');
 
     // ============================================================
     //  HELPER: AUTOCOMPLETE GENERICO
@@ -611,6 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cardExpensas.classList.remove('card-bloqueada');
         cardAdjuntos.classList.remove('card-bloqueada');
         cardMensajes.classList.remove('card-bloqueada');
+        if (cardServicios) cardServicios.classList.remove('card-bloqueada');
 
         // Actualizar título con nombre del cliente
         const tituloSpan = document.getElementById('tituloClienteMensaje');
@@ -662,6 +664,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnEnviarMsg.style.display = 'flex';
         renderMsgHistory(key);
         msgHistory.style.display = 'block';
+
+        // Reset selector de inmuebles para servicios
+        selectedServinmueble = null;
+        servinmuebleInput.value = '';
+        gridServiciosAdmin.innerHTML = '<div class="empty-state">Selecciona un inmueble para ver los servicios.</div>';
     }
 
     function resetTodo() {
@@ -689,11 +696,266 @@ document.addEventListener('DOMContentLoaded', () => {
         msgArchivoGroup.style.display = 'none';
         btnEnviarMsg.style.display = 'none';
         msgHistory.style.display = 'none';
+        
+        // Reset servicios
+        selectedServinmueble = null;
+        servinmuebleInput.value = '';
+        gridServiciosAdmin.innerHTML = '<div class="empty-state">Selecciona un inmueble para ver los servicios.</div>';
     }
 
     // Helper toast
     function mostrarToast(el) {
         el.classList.add('visible');
         setTimeout(() => el.classList.remove('visible'), 3500);
+    }
+
+    // ============================================================
+    //  GESTIÓN DE SERVICIOS
+    // ============================================================
+    const modalChecklistServicios = document.getElementById('modalChecklistServicios');
+    const clienteServiciosNombre = document.getElementById('clienteServiciosNombre');
+    const btnConfigurarServicios = document.getElementById('btnConfigurarServicios');
+    const btnGuardarServiciosAdmin = document.getElementById('btnGuardarServiciosAdmin');
+    const closeChecklistServicios = document.querySelector('.close-checklist');
+    const successMsgServicios = document.getElementById('successMsgServicios');
+    const gridServiciosAdmin = document.getElementById('gridServiciosAdmin');
+    
+    // Select de inmuebles para servicios
+    const servinmuebleInput = document.getElementById('servinmuebleInput');
+    const servinmuebleDropdown = document.getElementById('servinmuebleDropdown');
+    const servinmuebleChevron = document.getElementById('servinmuebleChevron');
+    
+    let selectedServinmueble = null; // { key, label }
+
+    // Datos de servicios
+    const datosServicios = {
+        luz: {
+            nombre: 'Electricidad',
+            proveedor: 'EPEC',
+            icon: '⚡',
+            url: 'https://www.epec.com.ar/'
+        },
+        gas: {
+            nombre: 'Gas',
+            proveedor: 'Ecogas',
+            icon: '🔥',
+            url: 'https://www.ecogas.com.ar/'
+        },
+        agua: {
+            nombre: 'Agua',
+            proveedor: 'Aguas Cordobesas',
+            icon: '💧',
+            url: 'https://www.aguascordobesas.com.ar/'
+        },
+        admin: {
+            nombre: 'Administración',
+            proveedor: 'Consorcio',
+            icon: '🏢',
+            url: 'https://www.google.com'
+        },
+        internet: {
+            nombre: 'Internet',
+            proveedor: '',
+            icon: '🌐',
+            url: ''
+        }
+    };
+
+    // Autocomplete para inmuebles de servicios
+    crearAutocomplete({
+        inputEl: servinmuebleInput,
+        dropdownEl: servinmuebleDropdown,
+        chevronEl: servinmuebleChevron,
+        searchable: false,
+        getItems: () => {
+            if (!selectedClienteKey) return [];
+            return clientesData[selectedClienteKey].inmuebles.map(inm => ({ key: inm.key, label: inm.label, icon: 'fa-home' }));
+        },
+        onSelect: (key, label) => {
+            servinmuebleInput.value = label;
+            selectedServinmueble = { key, label };
+            cargarServiciosEnGrid();
+        }
+    });
+
+    function cargarServiciosEnGrid() {
+        if (!selectedClienteKey || !selectedServinmueble) {
+            gridServiciosAdmin.innerHTML = '<div class="empty-state">Selecciona un inmueble para ver los servicios.</div>';
+            return;
+        }
+
+        const storageKey = 'servicios_' + selectedClienteKey + '_' + selectedServinmueble.key;
+        const serviciosGuardados = JSON.parse(localStorage.getItem(storageKey) || '["luz"]');
+        gridServiciosAdmin.innerHTML = '';
+
+        if (serviciosGuardados.length === 0) {
+            gridServiciosAdmin.innerHTML = '<div class="empty-state">No hay servicios seleccionados.</div>';
+            return;
+        }
+
+        serviciosGuardados.forEach(servicioKey => {
+            const datosOriginales = datosServicios[servicioKey];
+            if (!datosOriginales) return;
+
+            // Obtener datos editados o usar los originales
+            const storageKeyDatos = 'servicio_datos_' + selectedClienteKey + '_' + selectedServinmueble.key + '_' + servicioKey;
+            const datosEditados = JSON.parse(localStorage.getItem(storageKeyDatos) || 'null');
+            const datos = datosEditados || datosOriginales;
+
+            const card = document.createElement('div');
+            card.className = 'service-card-simple';
+            card.setAttribute('data-id', servicioKey);
+
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button class="action-btn btn-toggle-edit" title="Editar">✏️</button>
+                </div>
+
+                <div class="view-mode-container">
+                    <div class="card-header-simple">
+                        <div class="service-icon">${datos.icon}</div>
+                        <div class="service-titles">
+                            <span class="service-name">${datos.nombre}</span>
+                            <span class="service-provider">${datos.proveedor}</span>
+                        </div>
+                    </div>
+                    <a href="${datos.url}" target="_blank" class="btn-ir-web">
+                        Ir al sitio
+                    </a>
+                </div>
+
+                <div class="edit-mode-container">
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">Servicio:</label>
+                    <input type="text" class="edit-input input-name" value="${datos.nombre}">
+                    
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">Proveedor:</label>
+                    <input type="text" class="edit-input input-provider" value="${datos.proveedor}">
+
+                    <label style="font-size:0.75rem; font-weight:bold; color:#666;">Enlace (URL):</label>
+                    <input type="text" class="edit-input input-url" value="${datos.url}">
+                    
+                    <div class="edit-buttons">
+                        <button class="btn-save">Guardar</button>
+                        <button class="btn-cancel">Cancelar</button>
+                    </div>
+                </div>
+            `;
+
+            gridServiciosAdmin.appendChild(card);
+            agregarLogicaEdicionAdmin(card, servicioKey);
+        });
+    }
+
+    function agregarLogicaEdicionAdmin(cardElement, servicioKey) {
+        if (!selectedServinmueble) return;
+        
+        const btnEdit = cardElement.querySelector('.btn-toggle-edit');
+        const btnSave = cardElement.querySelector('.btn-save');
+        const btnCancel = cardElement.querySelector('.btn-cancel');
+
+        const viewName = cardElement.querySelector('.service-name');
+        const viewProvider = cardElement.querySelector('.service-provider');
+        const viewLink = cardElement.querySelector('.btn-ir-web');
+
+        const inputName = cardElement.querySelector('.input-name');
+        const inputProvider = cardElement.querySelector('.input-provider');
+        const inputUrl = cardElement.querySelector('.input-url');
+
+        btnEdit.addEventListener('click', () => {
+            cardElement.classList.add('is-editing');
+            btnEdit.style.display = 'none';
+        });
+
+        btnSave.addEventListener('click', () => {
+            const datosEditados = {
+                nombre: inputName.value,
+                proveedor: inputProvider.value,
+                url: inputUrl.value,
+                icon: datosServicios[servicioKey].icon
+            };
+
+            // Guardar datos editados con clave por cliente + inmueble + servicio
+            const storageKeyDatos = 'servicio_datos_' + selectedClienteKey + '_' + selectedServinmueble.key + '_' + servicioKey;
+            localStorage.setItem(storageKeyDatos, JSON.stringify(datosEditados));
+
+            // Actualizar vista
+            viewName.textContent = inputName.value;
+            viewProvider.textContent = inputProvider.value;
+            viewLink.href = inputUrl.value;
+
+            cardElement.classList.remove('is-editing');
+            btnEdit.style.display = 'block';
+            mostrarToast(successMsgServicios);
+        });
+
+        btnCancel.addEventListener('click', () => {
+            inputName.value = viewName.textContent;
+            inputProvider.value = viewProvider.textContent;
+            inputUrl.value = viewLink.getAttribute('href');
+
+            cardElement.classList.remove('is-editing');
+            btnEdit.style.display = 'block';
+        });
+    }
+
+    // Abrir modal de servicios
+    if (btnConfigurarServicios) {
+        btnConfigurarServicios.addEventListener('click', () => {
+            if (!selectedClienteKey) {
+                mostrarAlerta('Selecciona un cliente primero', 'warning');
+                return;
+            }
+            if (!selectedServinmueble) {
+                mostrarAlerta('Selecciona un inmueble primero', 'warning');
+                return;
+            }
+            
+            const clienteData = clientesData[selectedClienteKey];
+            clienteServiciosNombre.textContent = clienteData.nombre;
+            
+            // Cargar servicios guardados previamente para este inmueble
+            const storageKey = 'servicios_' + selectedClienteKey + '_' + selectedServinmueble.key;
+            const serviciosGuardados = JSON.parse(localStorage.getItem(storageKey) || '["luz"]');
+            document.querySelectorAll('#modalChecklistServicios .checklist-container input[type="checkbox"]').forEach(chk => {
+                chk.checked = serviciosGuardados.includes(chk.value);
+            });
+            
+            modalChecklistServicios.style.display = 'flex';
+        });
+    }
+
+    // Cerrar modal
+    if (closeChecklistServicios) {
+        closeChecklistServicios.addEventListener('click', () => {
+            modalChecklistServicios.style.display = 'none';
+        });
+    }
+
+    if (modalChecklistServicios) {
+        window.addEventListener('click', (e) => {
+            if (e.target === modalChecklistServicios) {
+                modalChecklistServicios.style.display = 'none';
+            }
+        });
+    }
+
+    // Guardar servicios
+    if (btnGuardarServiciosAdmin) {
+        btnGuardarServiciosAdmin.addEventListener('click', () => {
+            if (!selectedClienteKey || !selectedServinmueble) return;
+            
+            const checkboxes = document.querySelectorAll('#modalChecklistServicios .checklist-container input[type="checkbox"]:checked');
+            const serviciosSeleccionados = Array.from(checkboxes).map(cb => cb.value);
+            
+            // Guardar en localStorage con clave única por cliente + inmueble
+            const storageKey = 'servicios_' + selectedClienteKey + '_' + selectedServinmueble.key;
+            localStorage.setItem(storageKey, JSON.stringify(serviciosSeleccionados));
+            
+            mostrarToast(successMsgServicios);
+            modalChecklistServicios.style.display = 'none';
+            
+            // Cargar servicios en la grid
+            cargarServiciosEnGrid();
+        });
     }
 });

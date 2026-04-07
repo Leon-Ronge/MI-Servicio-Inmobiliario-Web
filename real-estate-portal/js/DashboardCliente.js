@@ -1,38 +1,10 @@
-// Inicializar drag-scroll para servicios grid
-document.addEventListener('DOMContentLoaded', () => {
-    const slider = document.querySelector('.servicios-grid');
-    if (slider) {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+// ============================================================
+//  DATOS Y CONFIGURACIÓN GLOBAL
+// ============================================================
 
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
+const CLIENTE_KEY = 'leon'; // Clave del cliente logueado
 
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX);
-            slider.scrollLeft = scrollLeft - walk;
-        });
-    }
-});
-
+// Datos de servicios
 const datosServicios = {
     luz: {
         nombre: 'Electricidad',
@@ -64,163 +36,9 @@ const datosServicios = {
         icon: '🌐',
         url: ''
     }
-
 };
 
-/* --- ELEMENTOS DOM --- */
-const modalChecklist = document.getElementById('modalChecklist');
-const btnAgregar = document.getElementById('btnAgregarServicio');
-const btnGuardarServicios = document.getElementById('btnGuardarServicios');
-const gridServicios = document.getElementById('gridServicios');
-const closeChecklist = document.querySelector('.close-checklist');
-
-/* --- MANEJO DEL MODAL --- */
-if (btnAgregar) {
-    btnAgregar.addEventListener('click', () => {
-        modalChecklist.style.display = 'flex';
-    });
-}
-
-if (closeChecklist) {
-    closeChecklist.addEventListener('click', () => {
-        modalChecklist.style.display = 'none';
-    });
-}
-
-if (modalChecklist) {
-    window.addEventListener('click', (e) => {
-        if (e.target == modalChecklist) modalChecklist.style.display = 'none';
-    });
-}
-
-/* --- GENERACIÓN Y EDICIÓN DE CARDS --- */
-if (btnGuardarServicios) {
-    btnGuardarServicios.addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('.checklist-container input[type="checkbox"]:checked');
-        const checkedValues = Array.from(checkboxes).map(cb => cb.value);
-        // 1. Eliminar cards no seleccionadas
-        const currentCards = document.querySelectorAll('.service-card-simple');
-        currentCards.forEach(card => {
-            const id = card.getAttribute('data-id');
-            if (!checkedValues.includes(id)) {
-                card.remove();
-            }
-        });
-        // 2. Mostrar mensaje si no hay servicios seleccionados
-        if (checkedValues.length === 0) {
-            gridServicios.innerHTML = '<div class="empty-state">No hay servicios seleccionados.</div>';
-        } else {
-            const emptyMsg = gridServicios.querySelector('.empty-state');
-            if (emptyMsg) emptyMsg.remove();
-        }
-        // 3. Agregar nuevas cards seleccionadas
-        checkboxes.forEach(chk => {
-            const key = chk.value;
-            const existingCard = gridServicios.querySelector(`.service-card-simple[data-id="${key}"]`);
-
-            if (!existingCard) {
-                const data = datosServicios[key];
-                if (data) {
-                    crearCard(key, data);
-                }
-            }
-        });
-
-        if (modalChecklist) {
-            modalChecklist.style.display = 'none';
-        }
-    });
-}
-
-function crearCard(key, data) {
-    const card = document.createElement('div');
-    card.className = 'service-card-simple';
-    card.setAttribute('data-id', key);
-
-    card.innerHTML = `
-        <div class="card-actions">
-            <button class="action-btn btn-toggle-edit" title="Editar">✏️</button>
-        </div>
-
-        <div class="view-mode-container">
-            <div class="card-header-simple">
-                <div class="service-icon">${data.icon}</div>
-                <div class="service-titles">
-                    <span class="service-name">${data.nombre}</span>
-                    <span class="service-provider">${data.proveedor}</span>
-                </div>
-            </div>
-            <a href="${data.url}" target="_blank" class="btn-ir-web">
-                Ir al sitio
-            </a>
-        </div>
-
-        <div class="edit-mode-container">
-            <label style="font-size:0.75rem; font-weight:bold; color:#666;">Servicio:</label>
-            <input type="text" class="edit-input input-name" value="${data.nombre}">
-            
-            <label style="font-size:0.75rem; font-weight:bold; color:#666;">Proveedor:</label>
-            <input type="text" class="edit-input input-provider" value="${data.proveedor}">
-
-            <label style="font-size:0.75rem; font-weight:bold; color:#666;">Enlace (URL):</label>
-            <input type="text" class="edit-input input-url" value="${data.url}">
-            
-            <div class="edit-buttons">
-                <button class="btn-save">Guardar</button>
-                <button class="btn-cancel">Cancelar</button>
-            </div>
-        </div>
-    `;
-
-    gridServicios.appendChild(card);
-    agregarLogicaEdicion(card);
-}
-
-function agregarLogicaEdicion(cardElement) {
-    const btnEdit = cardElement.querySelector('.btn-toggle-edit');
-    const btnSave = cardElement.querySelector('.btn-save');
-    const btnCancel = cardElement.querySelector('.btn-cancel');
-
-    // Elementos de Vista
-    const viewName = cardElement.querySelector('.service-name');
-    const viewProvider = cardElement.querySelector('.service-provider');
-    const viewLink = cardElement.querySelector('.btn-ir-web');
-
-    // Elementos de Input
-    const inputName = cardElement.querySelector('.input-name');
-    const inputProvider = cardElement.querySelector('.input-provider');
-    const inputUrl = cardElement.querySelector('.input-url');
-
-    // 1. Editar
-    btnEdit.addEventListener('click', () => {
-        cardElement.classList.add('is-editing');
-        btnEdit.style.display = 'none';
-    });
-
-    // 2. Guardar
-    btnSave.addEventListener('click', () => {
-        viewName.textContent = inputName.value;
-        viewProvider.textContent = inputProvider.value;
-        viewLink.href = inputUrl.value;
-
-        cardElement.classList.remove('is-editing');
-        btnEdit.style.display = 'block';
-    });
-
-    // 3. Cancelar
-    btnCancel.addEventListener('click', () => {
-        inputName.value = viewName.textContent;
-        inputProvider.value = viewProvider.textContent;
-        inputUrl.value = viewLink.getAttribute('href');
-
-        cardElement.classList.remove('is-editing');
-        btnEdit.style.display = 'block';
-    });
-}
-
-/* --- LOGICA DE INMUEBLES --- */
-
-// 1. Base de datos de inmuebles
+// Base de datos de inmuebles
 const datosInmuebles = {
     fragueiro: {
         direccion: "Mariano Fragueiro 185/187",
@@ -238,16 +56,86 @@ const datosInmuebles = {
     }
 };
 
-// 2. DOM
-const selectorInmueble = document.getElementById('selectorInmueble');
-const infoDireccion = document.getElementById('infoDireccion');
-const infoEdificio = document.getElementById('infoEdificio');
-const infoDepto = document.getElementById('infoDepto');
-const infoPropietario = document.getElementById('infoPropietario');
-const infoAlquiler = document.getElementById('infoAlquiler');
-const infoExpensas = document.getElementById('infoExpensas');
+// Datos de inmuebles para notificaciones
+const inmuebleLabels = {
+    fragueiro: 'Mariano Fragueiro 185',
+    urquiza: 'Justo J. de Urquiza 184',
+    general: 'General'
+};
+
+// ============================================================
+//  FUNCIONES DE SERVICIOS
+// ============================================================
+
+function crearCard(key, data) {
+    const gridServicios = document.getElementById('gridServicios');
+    if (!gridServicios) return;
+    
+    const card = document.createElement('div');
+    card.className = 'service-card-simple';
+    card.setAttribute('data-id', key);
+
+    card.innerHTML = `
+        <div class="view-mode-container">
+            <div class="card-header-simple">
+                <div class="service-icon">${data.icon}</div>
+                <div class="service-titles">
+                    <span class="service-name">${data.nombre}</span>
+                    <span class="service-provider">${data.proveedor}</span>
+                </div>
+            </div>
+            <a href="${data.url}" target="_blank" class="btn-ir-web">
+                Ir al sitio
+            </a>
+        </div>
+    `;
+
+    gridServicios.appendChild(card);
+}
+
+function cargarServiciosDelAdmin(inmuebleKey) {
+    const gridServicios = document.getElementById('gridServicios');
+    if (!gridServicios) return;
+    
+    // Obtener servicios guardados por el admin para este inmueble
+    const storageKey = 'servicios_' + CLIENTE_KEY + '_' + inmuebleKey;
+    const serviciosGuardados = JSON.parse(localStorage.getItem(storageKey) || '["luz"]');
+    
+    // Limpiar grid
+    gridServicios.innerHTML = '';
+    
+    if (serviciosGuardados.length === 0) {
+        gridServicios.innerHTML = '<div class="empty-state">No hay servicios disponibles.</div>';
+        return;
+    }
+    
+    // Crear cards para cada servicio guardado
+    serviciosGuardados.forEach(servicioKey => {
+        const datosOriginales = datosServicios[servicioKey];
+        if (!datosOriginales) return;
+        
+        // Obtener datos editados por el admin o usar los originales
+        const storageKeyDatos = 'servicio_datos_' + CLIENTE_KEY + '_' + inmuebleKey + '_' + servicioKey;
+        const datosEditados = JSON.parse(localStorage.getItem(storageKeyDatos) || 'null');
+        const datos = datosEditados || datosOriginales;
+        
+        crearCard(servicioKey, datos);
+    });
+}
+
+// ============================================================
+//  FUNCIONES DE INMUEBLES
+// ============================================================
 
 function actualizarInmueble(seleccionado) {
+    const selectorInmueble = document.getElementById('selectorInmueble');
+    const infoDireccion = document.getElementById('infoDireccion');
+    const infoEdificio = document.getElementById('infoEdificio');
+    const infoDepto = document.getElementById('infoDepto');
+    const infoPropietario = document.getElementById('infoPropietario');
+    const infoAlquiler = document.getElementById('infoAlquiler');
+    const infoExpensas = document.getElementById('infoExpensas');
+    
     const datos = datosInmuebles[seleccionado];
     if (datos) {
         infoDireccion.textContent = datos.direccion;
@@ -261,23 +149,20 @@ function actualizarInmueble(seleccionado) {
             infoAlquiler.textContent = alquilerGuardado ? `$${alquilerGuardado}` : '$0';
         }
 
-        // ── Cargar archivos adjuntos (Alquiler y Expensas) ──
+        // Cargar archivos adjuntos
         const gridArchivos = document.getElementById('gridArchivos');
         if (gridArchivos) {
-            gridArchivos.innerHTML = ''; // Limpiar la grid
+            gridArchivos.innerHTML = '';
             
             let archivosEncontrados = false;
             
-            // Buscar en localStorage todos los archivos para este inmueble
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 
-                // Buscar archivos de documento - formato: documento_archivo_[inmueble]_[timestamp]_[idx]
                 if (key.startsWith('documento_archivo_' + seleccionado + '_')) {
                     try {
                         const archivoData = JSON.parse(localStorage.getItem(key));
                         
-                        // Crear card del archivo
                         const archivoCard = document.createElement('div');
                         archivoCard.className = 'archivo-card';
                         
@@ -306,19 +191,18 @@ function actualizarInmueble(seleccionado) {
                 }
             }
             
-            // Si no hay archivos, mostrar mensaje vacío
             if (!archivosEncontrados) {
                 gridArchivos.innerHTML = '<div class="empty-state">No hay archivos adjuntos.</div>';
             }
         }
         
-        // Cargar expensas guardadas por el admin desde localStorage o usar default ──
+        // Cargar expensas
         const expensasGuardadas = localStorage.getItem('expensas_' + seleccionado);
         if (infoExpensas) {
             infoExpensas.textContent = expensasGuardadas ? `$${expensasGuardadas}` : datos.expensas_default;
         }
 
-        // ── Alerta de aumento de alquiler ──
+        // Alerta de aumento de alquiler
         const alertaAlquilerEl = document.getElementById('alquilerAlerta');
         const alertaAlquilerDetalleEl = document.getElementById('alquilerAlertaDetalle');
         const alertaAlquilerKey = 'alquiler_alerta_' + seleccionado;
@@ -332,16 +216,15 @@ function actualizarInmueble(seleccionado) {
                  <span class="alerta-monto-nuevo">$${alerta.nuevo}</span>
                  <span class="alerta-fecha">${alerta.fecha}</span>`;
             alertaAlquilerEl.style.display = 'flex';
-            // Animación de entrada
             alertaAlquilerEl.classList.remove('alerta-visible');
-            void alertaAlquilerEl.offsetWidth; // reflow para reiniciar animación
+            void alertaAlquilerEl.offsetWidth;
             alertaAlquilerEl.classList.add('alerta-visible');
         } else if (alertaAlquilerEl) {
             alertaAlquilerEl.style.display = 'none';
             alertaAlquilerEl.classList.remove('alerta-visible');
         }
 
-        // ── Alerta de aumento de expensas ──
+        // Alerta de aumento de expensas
         const alertaEl = document.getElementById('expensasAlerta');
         const alertaDetalleEl = document.getElementById('expensasAlertaDetalle');
         const alertaKey = 'expensas_alerta_' + seleccionado;
@@ -355,9 +238,8 @@ function actualizarInmueble(seleccionado) {
                  <span class="alerta-monto-nuevo">$${alerta.nuevo}</span>
                  <span class="alerta-fecha">${alerta.fecha}</span>`;
             alertaEl.style.display = 'flex';
-            // Animación de entrada
             alertaEl.classList.remove('alerta-visible');
-            void alertaEl.offsetWidth; // reflow para reiniciar animación
+            void alertaEl.offsetWidth;
             alertaEl.classList.add('alerta-visible');
         } else if (alertaEl) {
             alertaEl.style.display = 'none';
@@ -366,11 +248,66 @@ function actualizarInmueble(seleccionado) {
     }
 }
 
-// Botón cerrar alerta expensas
+// ============================================================
+//  INICIALIZACIÓN - ÚNICO LISTENER DE DOMC ONTENLOADED
+// ============================================================
+
 document.addEventListener('DOMContentLoaded', () => {
-    const btnCerrar = document.getElementById('btnCerrarAlertaExpensas');
-    if (btnCerrar) {
-        btnCerrar.addEventListener('click', () => {
+    // 1. DRAG-SCROLL para servicios grid
+    const slider = document.querySelector('.servicios-grid');
+    if (slider) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX);
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    }
+
+    // 2. SERVICIOS - Cargar desde admin
+    // Se cargan cuando se selecciona un inmueble
+
+    // 3. INMUEBLES - Selector y alertas
+    const selectorInmueble = document.getElementById('selectorInmueble');
+    if (selectorInmueble) {
+        // Event listener para cambios de inmueble
+        selectorInmueble.addEventListener('change', (e) => {
+            actualizarInmueble(e.target.value);
+            cargarServiciosDelAdmin(e.target.value);
+        });
+        
+        // Cargar estado inicial
+        const inmuebleInicial = selectorInmueble.value;
+        actualizarInmueble(inmuebleInicial);
+        cargarServiciosDelAdmin(inmuebleInicial);
+    }
+
+    // 4. BOTONES DE CERRAR ALERTAS
+    const btnCerrarExpensas = document.getElementById('btnCerrarAlertaExpensas');
+    if (btnCerrarExpensas) {
+        btnCerrarExpensas.addEventListener('click', () => {
             const inmuebleActual = selectorInmueble ? selectorInmueble.value : null;
             if (inmuebleActual) {
                 localStorage.removeItem('expensas_alerta_' + inmuebleActual);
@@ -383,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Botón cerrar alerta alquiler
     const btnCerrarAlquiler = document.getElementById('btnCerrarAlertaAlquiler');
     if (btnCerrarAlquiler) {
         btnCerrarAlquiler.addEventListener('click', () => {
@@ -398,22 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
 
-// 3. Evento de cambio y cargar estado inicial
-document.addEventListener('DOMContentLoaded', () => {
-    const selector = document.getElementById('selectorInmueble');
-    if (selector) {
-        // Registrar evento de cambio
-        selector.addEventListener('change', (e) => {
-            actualizarInmueble(e.target.value);
-        });
-        
-        // Cargar estado inicial
-        actualizarInmueble(selector.value);
-    }
-    
-    // Usar event delegation para descargas de archivos (una sola vez)
+    // 5. DESCARGAS DE ARCHIVOS
     document.addEventListener('click', (e) => {
         if (e.target.closest('.btn-ver-archivo')) {
             e.preventDefault();
@@ -422,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const archivoData = JSON.parse(localStorage.getItem(key));
             
             if (archivoData && archivoData.base64) {
-                // Convertir base64 a Blob y descargar
                 const base64Data = archivoData.base64.includes(',') 
                     ? archivoData.base64.split(',')[1] 
                     : archivoData.base64;
@@ -437,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const blob = new Blob([byteArray], { type: mimeType });
                     const blobUrl = URL.createObjectURL(blob);
                     
-                    // Crear un link temporal para descargar
                     const link = document.createElement('a');
                     link.href = blobUrl;
                     link.download = archivoData.nombre || 'descarga';

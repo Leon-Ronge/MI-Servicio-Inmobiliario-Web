@@ -200,7 +200,99 @@
                 </div>
             </section>
 
+            <!-- ===== CARD: GESTIÓN DE SERVICIOS ===== -->
+            <section class="admin-card card-bloqueada" id="cardServicios">
+                <div class="card-section-title">
+                    <i class="fas fa-plug"></i> Gestión de Servicios
+                </div>
+
+                <div id="successMsgServicios" class="success-toast">
+                    <i class="fas fa-check-circle"></i> Servicios actualizados con éxito.
+                </div>
+
+                <p style="color: #666; margin-bottom: 20px; font-size: 0.95rem;">
+                    Selecciona los servicios que deseas que vea el cliente en su dashboard.
+                </p>
+
+                <div class="form-group">
+                    <label><i class="fas fa-home"></i> &nbsp;Inmueble</label>
+                    <div class="autocomplete-wrapper">
+                        <input type="text" id="servinmuebleInput" class="autocomplete-input"
+                            placeholder="Seleccioná un inmueble..." autocomplete="off" readonly>
+                        <i class="fas fa-chevron-down autocomplete-icon" id="servinmuebleChevron"></i>
+                        <div class="autocomplete-dropdown" id="servinmuebleDropdown"></div>
+                    </div>
+                </div>
+
+                <button id="btnConfigurarServicios" class="btn-action">
+                    <i class="fas fa-cog"></i> Configurar Servicios
+                </button>
+
+                <!-- Grid de servicios del cliente -->
+                <div class="servicios-grid" id="gridServiciosAdmin" style="margin-top: 30px;">
+                    <div class="empty-state">Selecciona servicios para mostrar aquí.</div>
+                </div>
+            </section>
+
         </main>
+    </div>
+
+    <!-- ===== MODAL: CHECKLIST DE SERVICIOS ===== -->
+    <div id="modalChecklistServicios" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-checklist close-modal">&times;</span>
+
+            <div class="factura-header">
+                <h2>Activar Servicios para <span id="clienteServiciosNombre">Cliente</span></h2>
+                <p style="margin-top:5px; color:#666;">Selecciona los servicios visibles</p>
+            </div>
+
+            <div class="checklist-container">
+                <label class="checklist-item">
+                    <input type="checkbox" value="luz" checked>
+                    <div class="check-info">
+                        <span class="check-title">Electricidad, </span>
+                        <span class="check-desc">EPEC</span>
+                    </div>
+                </label>
+
+                <label class="checklist-item">
+                    <input type="checkbox" value="agua">
+                    <div class="check-info">
+                        <span class="check-title">Agua, </span>
+                        <span class="check-desc">Aguas Cordobesas</span>
+                    </div>
+                </label>
+
+                <label class="checklist-item">
+                    <input type="checkbox" value="gas">
+                    <div class="check-info">
+                        <span class="check-title">Gas, </span>
+                        <span class="check-desc">Ecogas</span>
+                    </div>
+                </label>
+
+                <label class="checklist-item">
+                    <input type="checkbox" value="internet">
+                    <div class="check-info">
+                        <span class="check-title">Internet</span>
+                        <span class="check-desc"></span>
+                    </div>
+                </label>
+
+                <label class="checklist-item">
+                    <input type="checkbox" value="admin">
+                    <div class="check-info">
+                        <span class="check-title">Administración, </span>
+                        <span class="check-desc">Expensas / Consorcio</span>
+                    </div>
+                </label>
+            </div>
+
+            <button id="btnGuardarServiciosAdmin" class="btn-download" style="background-color: var(--color-dark);">
+                Confirmar Servicios
+            </button>
+        </div>
     </div>
 
     <!-- ===== MODAL ALERTA PERSONALIZADA ===== -->
