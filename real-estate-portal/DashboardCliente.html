@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/DashboardCliente.css">
+    <link rel="stylesheet" href="css/comprobantes.css">
 </head>
 
 <body>
@@ -234,13 +235,49 @@
             </section>
 
 
+            <!-- ===== SECCIÓN: SUBIR COMPROBANTES ===== -->
+            <section class="comprobantes-container">
+                <div class="comprobantes-header">
+                    <h2>Subir Comprobantes</h2>
+                </div>
+                <div class="comprobantes-content">
+                    <!-- Área de drag & drop -->
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-zone-content" id="uploadZoneContent">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="upload-text">Arrastrá archivos aquí o hacé clic para seleccionar</p>
+                            <span class="upload-hint">Formatos: PDF, JPG, PNG (máx. 5MB)</span>
+                            <input type="file" id="archivoInput" class="file-input" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+                        </div>
+                        <div class="upload-files-list" id="uploadFilesList" style="display: none;"></div>
+                    </div>
+
+                    <!-- Botón guardar -->
+                    <button id="btnGuardarComprobante" type="button" class="btn-action">
+                        <i class="fas fa-upload"></i> Guardar Comprobante
+                    </button>
+
+                    <div id="successMsgComprobante" class="success-toast">
+                        <i class="fas fa-check-circle"></i> Comprobante subido con éxito.
+                    </div>
+
+                    <!-- Historial de comprobantes cargados -->
+                    <div class="comprobantes-history" id="comprobantesHistory" style="display:none;">
+                        <div class="history-title">
+                            <i class="fas fa-history"></i> Mis Comprobantes
+                        </div>
+                        <div class="history-list" id="comprobantesHistoryList"></div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Seccion archivos adjuntos -->
             <section class="archivos-container">
                 <div class="archivos-header">
-                    <h2>Archivos Adjuntos</h2>
+                    <h2>Archivos del Administrador</h2>
                 </div>
                 <div class="archivos-grid" id="gridArchivos">
-                    <div class="empty-state">No hay archivos adjuntos.</div>
+                    <div class="empty-state">No hay archivos del administrador.</div>
                 </div>
             </section>
 

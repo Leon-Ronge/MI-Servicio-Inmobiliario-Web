@@ -445,3 +445,348 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === STORAGE_KEY) cargarNotifs();
     });
 })();
+
+/* ===== CARGA DE COMPROBANTES ===== */
+(function () {
+    const CLIENTE_KEY = 'leon'; // Clave del cliente logueado
+    const uploadZone = document.getElementById('uploadZone');
+    const uploadZoneContent = document.getElementById('uploadZoneContent');
+    const uploadFilesList = document.getElementById('uploadFilesList');
+    const archivoInput = document.getElementById('archivoInput');
+    const btnGuardarComprobante = document.getElementById('btnGuardarComprobante');
+    const successMsgComprobante = document.getElementById('successMsgComprobante');
+    const comprobantesHistory = document.getElementById('comprobantesHistory');
+    const comprobantesHistoryList = document.getElementById('comprobantesHistoryList');
+
+    let archivosSeleccionados = [];
+
+    // Verificar que los elementos existen
+    if (!uploadZone || !archivoInput || !btnGuardarComprobante) {
+        console.error('Elementos del upload no encontrados en el DOM');
+        return;
+    }
+
+    // Verificar que localStorage está disponible
+    let localStorageDisponible = true;
+    try {
+        const test = '__localStorage_test__';
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+    } catch (e) {
+        localStorageDisponible = false;
+        console.error('localStorage no está disponible:', e.message);
+        alert('⚠️ Error: El almacenamiento local no está disponible. Verifica si estás en modo incógnito o si el navegador lo permite.');
+    }
+
+    if (!localStorageDisponible) {
+        btnGuardarComprobante.disabled = true;
+        btnGuardarComprobante.style.opacity = '0.5';
+        return;
+    }
+
+    console.log('CARGA DE COMPROBANTES: Inicializado correctamente');
+
+    // Función para renderizar lista de archivos
+    function renderizarListaArchivos() {
+        if (archivosSeleccionados.length === 0) {
+            uploadZoneContent.style.display = 'flex';
+            uploadFilesList.style.display = 'none';
+            uploadZone.classList.remove('has-file');
+            return;
+        }
+
+        uploadZoneContent.style.display = 'none';
+        uploadFilesList.style.display = 'block';
+        uploadZone.classList.add('has-file');
+
+        uploadFilesList.innerHTML = archivosSeleccionados.map((file, idx) => `
+            <div class="upload-file-chip">
+                <i class="fas fa-file-alt chip-icon"></i>
+                <span class="chip-name">${file.name}</span>
+                <button class="chip-remove" onclick="eliminarArchivoComprobante(${idx})" title="Quitar archivo" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Función global para eliminar archivos
+    window.eliminarArchivoComprobante = (idx) => {
+        archivosSeleccionados.splice(idx, 1);
+        archivoInput.value = '';
+        renderizarListaArchivos();
+    };
+
+    // Hacer clic en la zona de upload
+    uploadZoneContent.addEventListener('click', () => {
+        archivoInput.click();
+    });
+
+    // Cambio en input de archivos
+    archivoInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        console.log(`Archivos seleccionados: ${files.length}`);
+        
+        // Validar tipos de archivo
+        const extensionesPermitidas = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+        const archivosValidos = files.filter(f => {
+            const esValido = extensionesPermitidas.includes(f.type);
+            if (!esValido) {
+                console.warn(`Archivo rechazado (tipo no permitido): ${f.name} (${f.type})`);
+            }
+            return esValido;
+        });
+
+        if (archivosValidos.length !== files.length) {
+            alert(`Se rechazaron ${files.length - archivosValidos.length} archivo(s) por tipo incorrecto. Solo se permiten: PDF, JPG, PNG`);
+        }
+
+        archivosSeleccionados = archivosValidos;
+        renderizarListaArchivos();
+    });
+
+    // Drag & drop
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        if (!uploadZone.classList.contains('has-file')) {
+            uploadZone.classList.add('drag-over');
+        }
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('drag-over');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files).filter(f => 
+            f.type === 'application/pdf' || f.type.startsWith('image/')
+        );
+        archivosSeleccionados = archivosSeleccionados.concat(files);
+        renderizarListaArchivos();
+    });
+
+    // Guardar comprobantes
+    btnGuardarComprobante.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        console.log('Botón Guardar Comprobante clickeado');
+        
+        if (archivosSeleccionados.length === 0) {
+            alert('Por favor selecciona al menos un archivo.');
+            console.warn('No hay archivos seleccionados');
+            return;
+        }
+
+        // Deshabilitar botón durante la carga
+        btnGuardarComprobante.disabled = true;
+        const textOriginal = btnGuardarComprobante.innerHTML;
+        btnGuardarComprobante.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+        
+        const selectorInmueble = document.getElementById('selectorInmueble');
+        const inmuebleActual = selectorInmueble?.value || 'fragueiro';
+        let archivosGuardados = 0;
+        const totalArchivos = archivosSeleccionados.length;
+
+        console.log('Iniciando carga de archivos:', totalArchivos, 'para inmueble:', inmuebleActual);
+
+        archivosSeleccionados.forEach((file, idx) => {
+            console.log(`Procesando archivo ${idx + 1}/${totalArchivos}:`, file.name, `(${file.type})`);
+
+            // Validar tamaño de archivo (máximo 5MB)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert(`El archivo "${file.name}" excede el tamaño máximo permitido (5MB)`);
+                btnGuardarComprobante.disabled = false;
+                btnGuardarComprobante.innerHTML = textOriginal;
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onerror = () => {
+                console.error(`Error al leer archivo ${file.name}:`, reader.error);
+                alert(`Error al leer el archivo ${file.name}`);
+                btnGuardarComprobante.disabled = false;
+                btnGuardarComprobante.innerHTML = textOriginal;
+            };
+
+            reader.onload = (e) => {
+                try {
+                    if (!e.target.result) {
+                        throw new Error('Error: No se pudo leer el archivo');
+                    }
+
+                    const timestamp = Date.now();
+                    const storageKey = 'comprobante_' + inmuebleActual + '_' + timestamp + '_' + idx;
+                    const datos = {
+                        nombre: file.name,
+                        tipo: file.type,
+                        base64: e.target.result,
+                        fecha: new Date().toLocaleString('es-AR'),
+                        leido: false,
+                        cliente: CLIENTE_KEY,
+                        inmueble: inmuebleActual
+                    };
+                    
+                    localStorage.setItem(storageKey, JSON.stringify(datos));
+                    console.log(`✓ Archivo guardado: ${storageKey} (${Math.round(file.size / 1024)}KB)`);
+                    archivosGuardados++;
+
+                    // Mostrar toast solo cuando se guardaron todos los archivos
+                    if (archivosGuardados === totalArchivos) {
+                        console.log('✓ Todos los archivos guardados exitosamente');
+                        mostrarToastComprobante();
+                        renderizarHistorialComprobantes();
+                        limpiarComprobantes();
+                        
+                        // Notificar al admin
+                        crearNotificacionAdmin(inmuebleActual, totalArchivos);
+                        
+                        // Re-habilitar botón
+                        btnGuardarComprobante.disabled = false;
+                        btnGuardarComprobante.innerHTML = textOriginal;
+                    }
+                } catch (error) {
+                    console.error('Error al guardar archivo:', error);
+                    alert('Error al guardar el archivo: ' + error.message);
+                    btnGuardarComprobante.disabled = false;
+                    btnGuardarComprobante.innerHTML = textOriginal;
+                }
+            };
+
+            reader.readAsDataURL(file);
+        });
+    });
+
+    function limpiarComprobantes() {
+        archivosSeleccionados = [];
+        archivoInput.value = '';
+        renderizarListaArchivos();
+    }
+
+    function mostrarToastComprobante() {
+        // Remover cualquier timeout previo
+        if (window.toastTimeout) {
+            clearTimeout(window.toastTimeout);
+        }
+        
+        successMsgComprobante.classList.remove('show');
+        // Forzar reflow para reiniciar la animación
+        void successMsgComprobante.offsetWidth;
+        successMsgComprobante.classList.add('show');
+        
+        window.toastTimeout = setTimeout(() => {
+            successMsgComprobante.classList.remove('show');
+        }, 4000);
+    }
+
+    function renderizarHistorialComprobantes() {
+        const inmuebleActual = document.getElementById('selectorInmueble')?.value || 'general';
+        let comprobantesEncontrados = [];
+
+        // Buscar en localStorage todos los comprobantes para este cliente e inmueble
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('comprobante_' + inmuebleActual + '_')) {
+                try {
+                    const comprobanteData = JSON.parse(localStorage.getItem(key));
+                    if (comprobanteData.cliente === CLIENTE_KEY) {
+                        comprobantesEncontrados.push({
+                            key: key,
+                            nombre: comprobanteData.nombre,
+                            fecha: comprobanteData.fecha,
+                            leido: comprobanteData.leido
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error al procesar comprobante:', e);
+                }
+            }
+        }
+
+        // Ordenar por fecha descendente (más recientes primero)
+        comprobantesEncontrados.sort((a, b) => {
+            const fechaA = new Date(a.fecha);
+            const fechaB = new Date(b.fecha);
+            return fechaB - fechaA;
+        });
+
+        // Limitar a 15 archivos máximo
+        comprobantesEncontrados = comprobantesEncontrados.slice(0, 15);
+
+        if (comprobantesEncontrados.length === 0) {
+            comprobantesHistory.style.display = 'none';
+            return;
+        }
+
+        comprobantesHistory.style.display = 'block';
+        comprobantesHistoryList.innerHTML = comprobantesEncontrados.map(comp => `
+            <div class="history-item ${comp.leido ? 'leido' : ''}">
+                <div class="history-item-info">
+                    <i class="fas fa-file ${comp.leido ? 'fa-check-circle' : 'fa-clock'}"></i>
+                    <div>
+                        <div class="history-item-name">${comp.nombre}</div>
+                        <div class="history-item-fecha">${comp.fecha}</div>
+                    </div>
+                </div>
+                <div class="history-item-status">
+                    <span class="status-badge ${comp.leido ? 'leido' : 'pendiente'}">
+                        ${comp.leido ? '✓ Leído' : 'Pendiente'}
+                    </span>
+                    <button class="btn-eliminar-comprobante" onclick="eliminarComprobanteCliente('${comp.key}')" title="Eliminar comprobante">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function crearNotificacionAdmin(inmuebleKey, cantidad) {
+        const ADMIN_KEY = 'nuevos_comprobantes_' + inmuebleKey;
+        const comprobantesKey = JSON.parse(localStorage.getItem(ADMIN_KEY) || '[]');
+        comprobantesKey.push({
+            timestamp: Date.now(),
+            cantidad: cantidad,
+            cliente: CLIENTE_KEY
+        });
+        localStorage.setItem(ADMIN_KEY, JSON.stringify(comprobantesKey));
+    }
+
+    // Función global para eliminar comprobante
+    window.eliminarComprobanteCliente = (storageKey) => {
+        if (confirm('¿Estás seguro de que deseas eliminar este comprobante?')) {
+            localStorage.removeItem(storageKey);
+            renderizarHistorialComprobantes();
+            
+            // Mostrar mensaje de eliminación exitosa
+            successMsgComprobante.innerHTML = '<i class="fas fa-trash-alt"></i> Comprobante eliminado.';
+            mostrarToastComprobante();
+            
+            // Restaurar el mensaje original después
+            setTimeout(() => {
+                successMsgComprobante.innerHTML = '<i class="fas fa-check-circle"></i> Comprobante subido con éxito.';
+            }, 4500);
+        }
+    };
+
+    // Renderizar historial al cambiar inmueble
+    const selectorInmueble = document.getElementById('selectorInmueble');
+    if (selectorInmueble) {
+        selectorInmueble.addEventListener('change', () => {
+            renderizarHistorialComprobantes();
+        });
+    }
+
+    // Cargar historial al inicio
+    renderizarHistorialComprobantes();
+
+    // Escuchar cambios en localStorage desde otra pestaña/ventana
+    window.addEventListener('storage', (e) => {
+        if (e.key?.startsWith('comprobante_')) {
+            renderizarHistorialComprobantes();
+        }
+    });
+})();

@@ -1,0 +1,295 @@
+/* ===== ESTILOS PARA COMPROBANTES DEL CLIENTE (ADMIN) ===== */
+
+.comprobantes-admin-list {
+    margin-top: 20px;
+}
+
+.comprobantes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comprobante-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #ffffff;
+    border-left: 4px solid #ff4400;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.comprobante-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateX(4px);
+}
+
+.comprobante-item.leido {
+    opacity: 0.7;
+    background-color: #f5f5f5;
+    border-left-color: #4caf50;
+}
+
+.comprobante-item.sin-leer {
+    background: linear-gradient(135deg, #fff8f5, #fffbf8);
+}
+
+.comprobante-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.comprobante-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.comprobante-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.comprobante-nombre {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.comprobante-fecha {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.comprobante-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.btn-descargar,
+.btn-marcar-leido {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    color: #555;
+}
+
+.btn-descargar:hover {
+    background-color: #1976d2;
+    color: #ffffff;
+    border-color: #1976d2;
+    transform: scale(1.05);
+}
+
+.btn-marcar-leido {
+    background-color: #f5f5f5;
+}
+
+.btn-marcar-leido:hover {
+    background-color: #4caf50;
+    color: #ffffff;
+    border-color: #4caf50;
+}
+
+.btn-marcar-leido.marcado {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+    border-color: #4caf50;
+}
+
+.btn-marcar-leido.marcado:hover {
+    background-color: #81c784;
+    color: #ffffff;
+}
+
+/* Estilos para badge de nuevos comprobantes */
+.badge-nuevos {
+    display: inline-block;
+    background-color: #ff4400;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Empty state */
+#emptyStateComprobantes {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+#emptyStateComprobantes i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+    opacity: 0.5;
+}
+
+/* ===== ESTILO PARA BOTÓN ELIMINAR COMPROBANTE (CLIENTE) ===== */
+.btn-eliminar-comprobante {
+    background-color: transparent;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d32f2f;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-eliminar-comprobante:hover {
+    background-color: #d32f2f;
+    color: #ffffff;
+    border-color: #d32f2f;
+    transform: scale(1.1);
+}
+
+.btn-eliminar-comprobante i {
+    font-size: 0.85rem;
+}
+
+/* Actualizar estilos de history-item para soportar botón de eliminar */
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    border-left: 4px solid #ff4400;
+    transition: all 0.2s ease;
+}
+
+.history-item:hover {
+    background-color: #fafafa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.history-item.leido {
+    opacity: 0.7;
+    background-color: #f5f5f5;
+    border-left-color: #4caf50;
+}
+
+.history-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.history-item-info i {
+    font-size: 1rem;
+    color: #ff4400;
+    flex-shrink: 0;
+}
+
+.history-item-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #212529;
+    word-break: break-word;
+}
+
+.history-item-fecha {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 4px;
+}
+
+.history-item-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.status-badge.pendiente {
+    background-color: #fffb91;
+    color: #f57f17;
+}
+
+.status-badge.leido {
+    background-color: #c8e6c9;
+    color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .comprobante-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .comprobante-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+        margin-top: 12px;
+    }
+
+    .btn-descargar,
+    .btn-marcar-leido {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .history-item-status {
+        width: 100%;
+        justify-content: space-between;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}

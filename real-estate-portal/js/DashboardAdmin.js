@@ -612,6 +612,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cardExpensas.classList.remove('card-bloqueada');
         cardAdjuntos.classList.remove('card-bloqueada');
         cardMensajes.classList.remove('card-bloqueada');
+        const cardComprobantes = document.getElementById('cardComprobantes');
+        if (cardComprobantes) cardComprobantes.classList.remove('card-bloqueada');
         if (cardServicios) cardServicios.classList.remove('card-bloqueada');
 
         // Actualizar título con nombre del cliente
@@ -958,4 +960,153 @@ document.addEventListener('DOMContentLoaded', () => {
             cargarServiciosEnGrid();
         });
     }
+
+    // ============================================================
+    //  COMPROBANTES DEL CLIENTE
+    // ============================================================
+    const cardComprobantes = document.getElementById('cardComprobantes');
+    const probeInmuebleInput = document.getElementById('probeInmuebleInput');
+    const probeInmuebleDropdown = document.getElementById('probeInmuebleDropdown');
+    const probeInmuebleChevron = document.getElementById('probeInmuebleChevron');
+    const comprobantesAdminList = document.getElementById('comprobantesAdminList');
+    const comprobantesListAdmin = document.getElementById('comprobantesListAdmin');
+    const emptyStateComprobantes = document.getElementById('emptyStateComprobantes');
+    const badgeComprobantes = document.getElementById('badgeComprobantes');
+
+    let selectedProbeInmueble = null;
+
+    // Autocomplete para inmuebles en comprobantes
+    crearAutocomplete({
+        inputEl: probeInmuebleInput,
+        dropdownEl: probeInmuebleDropdown,
+        chevronEl: probeInmuebleChevron,
+        searchable: false,
+        getItems: () => {
+            if (!selectedClienteKey) return [];
+            return clientesData[selectedClienteKey].inmuebles.map(inm => ({ key: inm.key, label: inm.label, icon: 'fa-home' }));
+        },
+        onSelect: (key, label) => {
+            probeInmuebleInput.value = label;
+            selectedProbeInmueble = { key, label };
+            renderizarComprobantesCliente(selectedClienteKey, key);
+        }
+    });
+
+    function renderizarComprobantesCliente(clienteKey, inmuebleKey) {
+        let comprobantesEncontrados = [];
+
+        // Buscar en localStorage todos los comprobantes para este cliente e inmueble
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('comprobante_' + inmuebleKey + '_')) {
+                try {
+                    const comprobanteData = JSON.parse(localStorage.getItem(key));
+                    if (comprobanteData.cliente === clienteKey) {
+                        comprobantesEncontrados.push({
+                            storageKey: key,
+                            nombre: comprobanteData.nombre,
+                            fecha: comprobanteData.fecha,
+                            leido: comprobanteData.leido,
+                            base64: comprobanteData.base64,
+                            tipo: comprobanteData.tipo
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error al procesar comprobante:', e);
+                }
+            }
+        }
+
+        // Ordenar por fecha descendente (más recientes primero)
+        comprobantesEncontrados.sort((a, b) => {
+            const fechaA = new Date(a.fecha);
+            const fechaB = new Date(b.fecha);
+            return fechaB - fechaA;
+        });
+
+        // Limitar a 15 archivos máximo
+        comprobantesEncontrados = comprobantesEncontrados.slice(0, 15);
+
+        if (comprobantesEncontrados.length === 0) {
+            comprobantesAdminList.style.display = 'none';
+            emptyStateComprobantes.style.display = 'block';
+            badgeComprobantes.style.display = 'none';
+            return;
+        }
+
+        emptyStateComprobantes.style.display = 'none';
+        comprobantesAdminList.style.display = 'block';
+
+        const noLeidos = comprobantesEncontrados.filter(c => !c.leido).length;
+        if (noLeidos > 0) {
+            badgeComprobantes.textContent = noLeidos;
+            badgeComprobantes.style.display = 'inline-block';
+        } else {
+            badgeComprobantes.style.display = 'none';
+        }
+
+        comprobantesListAdmin.innerHTML = comprobantesEncontrados.map(comp => `
+            <div class="comprobante-item ${comp.leido ? 'leido' : 'sin-leer'}">
+                <div class="comprobante-info">
+                    <i class="fas fa-file-pdf comprobante-icon" style="color: ${comp.tipo.includes('pdf') ? '#d32f2f' : '#1976d2'};"></i>
+                    <div class="comprobante-details">
+                        <div class="comprobante-nombre">${comp.nombre}</div>
+                        <div class="comprobante-fecha">${comp.fecha}</div>
+                    </div>
+                </div>
+                <div class="comprobante-actions">
+                    <button class="btn-descargar" onclick="descargarComprobanteAdmin('${comp.storageKey}')" title="Descargar comprobante">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn-marcar-leido ${comp.leido ? 'marcado' : ''}" onclick="marcarComprobanteLeido('${comp.storageKey}')" title="${comp.leido ? 'Ya leído' : 'Marcar como leído'}">
+                        <i class="fas ${comp.leido ? 'fa-check-double' : 'fa-check'}"></i>
+                        <span>${comp.leido ? '' : ''}</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Función global para descargar comprobante
+    window.descargarComprobanteAdmin = (storageKey) => {
+        const comprobanteData = JSON.parse(localStorage.getItem(storageKey));
+        if (comprobanteData && comprobanteData.base64) {
+            const base64Data = comprobanteData.base64.includes(',') 
+                ? comprobanteData.base64.split(',')[1] 
+                : comprobanteData.base64;
+            const mimeType = comprobanteData.tipo || 'application/octet-stream';
+            
+            try {
+                const byteChars = atob(base64Data);
+                const byteArray = new Uint8Array(byteChars.length);
+                for (let i = 0; i < byteChars.length; i++) {
+                    byteArray[i] = byteChars.charCodeAt(i);
+                }
+                const blob = new Blob([byteArray], { type: mimeType });
+                const blobUrl = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = comprobanteData.nombre || 'comprobante';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+                console.error('Error descargando comprobante:', err);
+            }
+        }
+    };
+
+    // Función global para marcar como leído
+    window.marcarComprobanteLeido = (storageKey) => {
+        const comprobanteData = JSON.parse(localStorage.getItem(storageKey));
+        comprobanteData.leido = true;
+        localStorage.setItem(storageKey, JSON.stringify(comprobanteData));
+        
+        // Re-renderizar la lista
+        if (selectedClienteKey && selectedProbeInmueble) {
+            renderizarComprobantesCliente(selectedClienteKey, selectedProbeInmueble.key);
+        }
+    };
 });
