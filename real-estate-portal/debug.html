@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Load Barrios</title>
+</head>
+<body>
+    <h1>Test de carga de barrios</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testCargarBarrios() {
+            const result = document.getElementById('result');
+            try {
+                result.innerHTML = '<p>Cargando GeoJSON...</p>';
+                const response = await fetch('geojson.json');
+                result.innerHTML += `<p>Status: ${response.status}</p>`;
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                result.innerHTML += `<p>✓ JSON válido</p>`;
+                result.innerHTML += `<p>Total features: ${data.features.length}</p>`;
+                
+                const barrios = data.features.map(f => f.properties.n);
+                result.innerHTML += `<p>Primeros 10 barrios:</p>`;
+                result.innerHTML += `<ul>${barrios.slice(0, 10).map(b => `<li>${b}</li>`).join('')}</ul>`;
+                
+            } catch (error) {
+                result.innerHTML += `<p style="color: red;">❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        testCargarBarrios();
+    </script>
+</body>
+</html>
