@@ -317,6 +317,12 @@
                 <input type="text" id="documento" class="input-field" placeholder="Ingresa tu DNI" maxlength="11">
             </div>
 
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" class="input-field" placeholder="Contraseña">
+                <i class="fa-regular fa-eye toggle-password" title="Mostrar contraseña"></i>
+            </div>
+
             <p id="login-error"
                 style="color: #ff4500; font-size: 0.85rem; text-align: left; margin-top: -20px; margin-bottom: 20px; display: none;">
                 DNI no encontrado. Verifica e intenta de nuevo.</p>
@@ -326,6 +332,7 @@
                     style="display: inline-flex; align-items: center; justify-content: center; width: 100%; border: none; cursor: pointer;">Ingresar</button>
                 <a href="index.html" class="btn back-link" title="Regresar a la página principal">Volver al
                     inicio</a>
+                <button type="button" id="clear-storage-btn" class="btn back-link" title="Limpiar datos guardados" style="background-color: #fff3e0; color: #ff6b35; font-size: 0.85rem; padding: 8px;">Limpiar datos guardados</button>
             </div>
         </form>
     </div>
@@ -371,6 +378,7 @@
         const passwordChangeForm = document.getElementById('password-change-form');
         const passwordChangeError = document.getElementById('password-change-error');
         let currentDNI = '';
+        let currentUser = null;
 
         // Toggle Password Visibility - Login
         document.querySelectorAll('.login-form .toggle-password').forEach(toggle => {
@@ -394,12 +402,14 @@
             });
         });
 
-        // Form Submit Handler - DNI Login
+        // Form Submit Handler - DNI/Password Login
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const dni = document.getElementById('documento').value.trim();
+            const password = document.getElementById('password').value.trim();
             loginError.style.display = 'none';
 
+            // Paso 1: Validar DNI
             if (!dni) {
                 loginError.textContent = 'Por favor, ingresa tu DNI.';
                 loginError.style.display = 'block';
@@ -413,23 +423,45 @@
                 return;
             }
 
-            currentDNI = dni;
+            // Validar que la contraseña no esté vacía
+            if (!password) {
+                loginError.textContent = 'Por favor, ingresa la contraseña.';
+                loginError.style.display = 'block';
+                return;
+            }
+
             const user = usersDatabase[dni];
             const savedPassword = localStorage.getItem(`password_${dni}`);
 
-            // Si es primer login (no hay contraseña guardada)
+            // Si es primer login (no hay contraseña guardada en localStorage)
             if (!savedPassword) {
+                // Validar con contraseña = DNI
+                if (password !== dni) {
+                    loginError.textContent = 'Contraseña incorrecta. En el primer acceso usa tu DNI como contraseña.';
+                    loginError.style.display = 'block';
+                    return;
+                }
+
+                // Login exitoso con DNI:DNI, ahora mostrar modal para cambiar contraseña
+                currentDNI = dni;
+                currentUser = user;
                 showPasswordChangeModal();
-            } else {
-                // Si ya tiene contraseña guardada, ir directamente al dashboard
-                proceedToLogin(dni, user.dashboard);
+                return;
             }
+
+            // Paso 2: Si ya tiene contraseña guardada, validarla
+            if (password !== savedPassword) {
+                loginError.textContent = 'Contraseña incorrecta. Intenta de nuevo.';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            // Login exitoso
+            window.location.href = user.dashboard;
         });
 
         // Show Password Change Modal
         function showPasswordChangeModal() {
-            document.getElementById('documento').value = '';
-            document.getElementById('documento').disabled = true;
             passwordChangeModal.classList.add('active');
             document.getElementById('new-password').focus();
         }
@@ -462,25 +494,29 @@
             // Guardar contraseña en localStorage
             localStorage.setItem(`password_${currentDNI}`, newPassword);
             
-            // Obtener el usuario actual y proceder al login
-            const user = usersDatabase[currentDNI];
-            proceedToLogin(currentDNI, user.dashboard);
+            // Cerrar modal
+            closePasswordChangeModal();
+            
+            // Redirigir al dashboard
+            window.location.href = currentUser.dashboard;
         });
 
-        // Proceed to Login
-        function proceedToLogin(dni, dashboard) {
-            // Limpiar el modal
+        // Close Password Change Modal
+        function closePasswordChangeModal() {
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
             passwordChangeError.style.display = 'none';
-            document.getElementById('documento').disabled = false;
-            
-            // Cerrar modal
             passwordChangeModal.classList.remove('active');
-
-            // Redirigir al dashboard
-            window.location.href = dashboard;
         }
+
+        // Limpiar datos guardados del localStorage
+        document.getElementById('clear-storage-btn').addEventListener('click', function() {
+            localStorage.clear();
+            alert('Datos guardados eliminados. Ahora puedes probar el primer acceso nuevamente.');
+            document.getElementById('documento').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('documento').focus();
+        });
     </script>
 </body>
 
