@@ -173,9 +173,129 @@
             color: var(--primary-color);
         }
 
+        .password-change-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-change-modal.active {
+            display: flex;
+        }
+
+        .password-change-card {
+            background-color: var(--white);
+            padding: 40px 50px;
+            width: 100%;
+            max-width: 420px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .password-change-card h2 {
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .password-change-card .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .password-change-form .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .password-change-form .input-group i:first-child {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .password-change-form .input-field {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            transition: var(--transition-fast);
+            background-color: #f9f9f9;
+        }
+
+        .password-change-form .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: var(--white);
+            box-shadow: 0 0 0 3px rgba(255, 68, 0, 0.1);
+        }
+
+        .password-change-form .input-group .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition-fast);
+            pointer-events: auto;
+        }
+
+        .password-change-form .input-group .toggle-password:hover {
+            color: var(--primary-color);
+        }
+
+        #password-change-error {
+            color: #ff4500;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-top: -20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .password-change-form .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .password-change-form .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            cursor: pointer;
+        }
+
         @media (max-width: 480px) {
             .login-card {
                 padding: 30px 20px;
+            }
+
+            .password-change-card {
+                padding: 30px 20px;
+                max-width: 90%;
             }
         }
     </style>
@@ -193,24 +313,15 @@
 
         <form id="login-form" class="login-form">
             <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input type="text" id="documento" class="input-field" placeholder="Usuario / Documento">
+                <i class="fa-solid fa-id-card"></i>
+                <input type="text" id="documento" class="input-field" placeholder="Ingresa tu DNI" maxlength="11">
             </div>
-
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="password" class="input-field" placeholder="Contraseña">
-                <i class="fa-regular fa-eye toggle-password" id="togglePassword" title="Mostrar contraseña"></i>
-            </div>
-
-            <a href="#" class="forgot-password">¿Olvidó su contraseña?</a>
 
             <p id="login-error"
                 style="color: #ff4500; font-size: 0.85rem; text-align: left; margin-top: -20px; margin-bottom: 20px; display: none;">
-                Usuario o contraseña incorrectos.</p>
+                DNI no encontrado. Verifica e intenta de nuevo.</p>
 
             <div class="btn-container">
-
                 <button type="submit" class="btn btn-primary" title="Ingresar a autogestión"
                     style="display: inline-flex; align-items: center; justify-content: center; width: 100%; border: none; cursor: pointer;">Ingresar</button>
                 <a href="index.html" class="btn back-link" title="Regresar a la página principal">Volver al
@@ -219,34 +330,157 @@
         </form>
     </div>
 
+    <!-- Modal de Cambio de Contraseña -->
+    <div id="password-change-modal" class="password-change-modal">
+        <div class="password-change-card">
+            <h2>Crear Contraseña</h2>
+            <p class="subtitle">Es tu primer acceso. Por favor, crea una contraseña segura para tu cuenta.</p>
+
+            <form id="password-change-form" class="password-change-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="new-password" class="input-field" placeholder="Nueva contraseña" required>
+                    <i class="fa-regular fa-eye toggle-password" title="Mostrar contraseña"></i>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="confirm-password" class="input-field" placeholder="Confirmar contraseña" required>
+                    <i class="fa-regular fa-eye toggle-password" title="Mostrar contraseña"></i>
+                </div>
+
+                <p id="password-change-error"></p>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary" title="Guardar contraseña">Guardar contraseña</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#password');
+        // Base de datos simulada de usuarios con DNI
+        const usersDatabase = {
+            '12345678': { nombre: 'Leon', role: 'cliente', dashboard: 'DashboardCliente.html' },
+            '87654321': { nombre: 'Mariela', role: 'admin', dashboard: 'DashboardAdmin.html' }
+        };
+
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
+        const passwordChangeModal = document.getElementById('password-change-modal');
+        const passwordChangeForm = document.getElementById('password-change-form');
+        const passwordChangeError = document.getElementById('password-change-error');
+        let currentDNI = '';
 
-        // Toggle Password Visibility
-        togglePassword.addEventListener('click', function (e) {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+        // Toggle Password Visibility - Login
+        document.querySelectorAll('.login-form .toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
         });
 
-        // Form Submit Handler
+        // Toggle Password Visibility - Password Change Modal
+        document.querySelectorAll('.password-change-form .toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Form Submit Handler - DNI Login
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const usr = document.getElementById('documento').value.trim();
-            const pwd = password.value.trim();
+            const dni = document.getElementById('documento').value.trim();
+            loginError.style.display = 'none';
 
-            if (usr === 'leon' && pwd === '123') {
-                window.location.href = 'DashboardCliente.html';
-            } else if (usr === 'mariela' && pwd === '123') {
-                window.location.href = 'DashboardAdmin.html';
-            } else {
+            if (!dni) {
+                loginError.textContent = 'Por favor, ingresa tu DNI.';
                 loginError.style.display = 'block';
+                return;
+            }
+
+            // Verificar si el DNI existe en la base de datos
+            if (!usersDatabase[dni]) {
+                loginError.textContent = 'DNI no encontrado. Verifica e intenta de nuevo.';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            currentDNI = dni;
+            const user = usersDatabase[dni];
+            const savedPassword = localStorage.getItem(`password_${dni}`);
+
+            // Si es primer login (no hay contraseña guardada)
+            if (!savedPassword) {
+                showPasswordChangeModal();
+            } else {
+                // Si ya tiene contraseña guardada, ir directamente al dashboard
+                proceedToLogin(dni, user.dashboard);
             }
         });
+
+        // Show Password Change Modal
+        function showPasswordChangeModal() {
+            document.getElementById('documento').value = '';
+            document.getElementById('documento').disabled = true;
+            passwordChangeModal.classList.add('active');
+            document.getElementById('new-password').focus();
+        }
+
+        // Handle Password Change Form
+        passwordChangeForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            passwordChangeError.style.display = 'none';
+
+            if (!newPassword || !confirmPassword) {
+                passwordChangeError.textContent = 'Por favor, completa todos los campos.';
+                passwordChangeError.style.display = 'block';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                passwordChangeError.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+                passwordChangeError.style.display = 'block';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                passwordChangeError.textContent = 'Las contraseñas no coinciden.';
+                passwordChangeError.style.display = 'block';
+                return;
+            }
+
+            // Guardar contraseña en localStorage
+            localStorage.setItem(`password_${currentDNI}`, newPassword);
+            
+            // Obtener el usuario actual y proceder al login
+            const user = usersDatabase[currentDNI];
+            proceedToLogin(currentDNI, user.dashboard);
+        });
+
+        // Proceed to Login
+        function proceedToLogin(dni, dashboard) {
+            // Limpiar el modal
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            passwordChangeError.style.display = 'none';
+            document.getElementById('documento').disabled = false;
+            
+            // Cerrar modal
+            passwordChangeModal.classList.remove('active');
+
+            // Redirigir al dashboard
+            window.location.href = dashboard;
+        }
     </script>
 </body>
 
